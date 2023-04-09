@@ -1,0 +1,16 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-4 text-center"><i class="fa-solid fa-magnifying-glass"></i> Search Simulation</h4>
+
+    <form [formGroup]="simulationSearchForm" (ngSubmit)="onSubmit()" class="mb-3">
+      <div class="mb-3">
+        <label for="maps" class="form-label">Simulation Name:</label>
+        <input type="text" class="form-control" id="name" name="name" formControlName="name" placeholder="Enter a valid simulation name">
+      </div>
+   
+      <div class="mb-3">
+        <button class="btn btn-primary d-grid w-100" type="submit" [disabled]="!simulationSearchForm.valid">Search</button>
+      </div>
+    </form>
+  </div>
+</div>
