@@ -24,11 +24,17 @@
 
       <div class="mb-3">
         <label for="node_max" class="form-label">Concept Map Maximum Nodes Count:</label>
-        <input type="text" class="form-control" id="node_max" name="node_max" placeholder="Enter a number below 30" formControlName="node_max">
+        <input type="text" class="form-control" id="node_max" name="node_max" placeholder="Enter a number equal or below 30" formControlName="node_max">
       </div>
    
-      <div class="mb-3">
-        <button class="btn btn-primary d-grid w-100" type="submit" [disabled]="!simulationCreateForm.valid">Generate</button>
+      <div class="text-center">
+        <div *ngIf="loading" class="row mt-3">
+          <div class="col-5"></div>
+          <div class="col-2 ms-3">
+            <div class="custom-loader text-center"></div>
+          </div>
+        </div>
+        <button *ngIf="!loading" class="btn btn-primary d-grid w-100 mb-3" type="submit" [disabled]="!simulationCreateForm.valid">Generate</button>
       </div>
     </form>
   </div>

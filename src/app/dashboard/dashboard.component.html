@@ -42,10 +42,11 @@
                 <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                   <div class="card-title">
                     <h5 class="text-nowrap mb-3"><i class="fa-solid fa-globe"></i> Generated Simulations</h5>
-                    <span class="badge bg-label-success rounded-pill">Year 2023</span>
+                    <span class="badge bg-label-success rounded-pill">Year {{getCurrentYear()}}</span>
                   </div>
                   <div class="mt-2">
-                    <h3 class="mb-0">{{generatedSimulations}}</h3>
+                    <div *ngIf="loading" class="custom-loader"></div>
+                    <h3 *ngIf="!loading" class="mb-0">{{generatedSimulations}}</h3>
                   </div>
                 </div>
               </div>
@@ -59,10 +60,11 @@
                 <div class="d-flex flex-sm-column flex-row align-items-start justify-content-between">
                   <div class="card-title">
                     <h5 class="text-nowrap mb-3"><i class="fa-solid fa-diagram-project"></i> Generated Maps</h5>
-                    <span class="badge bg-label-success rounded-pill">Year 2023</span>
+                    <span class="badge bg-label-success rounded-pill">Year {{getCurrentYear()}}</span>
                   </div>
                   <div class="mt-2">
-                    <h3 class="mb-0">{{generatedMaps}}</h3>
+                    <div *ngIf="loading" class="custom-loader"></div>
+                    <h3 *ngIf="!loading" class="mb-0">{{generatedMaps}}</h3>
                   </div>
                 </div>
               </div>
@@ -81,3 +83,5 @@
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>

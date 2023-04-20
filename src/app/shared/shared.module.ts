@@ -11,11 +11,13 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterModule } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
@@ -34,7 +36,8 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ModalModule,
     TooltipModule,
     NgSelectModule,
-    NavbarComponent
+    NavbarComponent,
+    FooterComponent
   ],
   providers: [
     AlertService,

@@ -1,53 +1,94 @@
 <app-navbar></app-navbar>
 
-<div class="row mt-5 mx-2">
-  <div class="col-6" *ngIf="simulation">
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Simulation: <small>{{simulation!.name}}</small></h5>
-      </div>
-    
-      <div class="card-body">
-        <div class="row">
-          <div class="col-6">
-            <p class="mb-0"><i class="fa-solid fa-genderless"></i> Number of Maps: <span class="ms-2">{{simulation!.maps_count}}</span></p>
-            <p class="mb-0"><i class="fa-solid fa-genderless"></i> Minimum Nodes Count: <span class="ms-2">{{simulation!.node_min}}</span></p>
-            <p class="mb-0"><i class="fa-solid fa-genderless"></i> Maximum Nodes Count: <span class="ms-2">{{simulation!.node_max}}</span></p>
-          </div>
-        </div>
-        <div class="row mt-3" *ngIf="currentMap">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Selected Map:</h5>
-              </div>
-            
-              <div class="card-body">
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Nodes Count: <span class="ms-2">{{currentMap!.nodes_count}}</span></p>
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Edges Count: <span class="ms-2">{{currentMap!.edges_count}}</span></p>
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Entropy (H): <span class="ms-2">{{currentMap!.entropy.toFixed(2)}}</span></p>
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Entropy Percent (Hr): <span class="ms-2">{{currentMap!.entropy_percent.toFixed(2)}}</span></p>
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Effort (M): <span class="ms-2">{{currentMap!.effort.toFixed(2)}}</span></p>
-
-                <button class="mt-3 btn btn-primary" (click)="showCurrentMap()">Show Graph</button>
-              </div>
-            </div>    
-          </div>
-        </div>
-      </div>
-    </div>    
+<div class="row mt-5" *ngIf="loading">
+  <div class="col-5"></div>
+  <div class="col-2 ms-5 mt-5">
+    <div class="ms-3 custom-big-loader mt-5"></div>
   </div>
-  <div class="col-6">
+</div>
+
+<div class="row h-90 my-4 mx-2">
+  <div class="col-4 h-100" *ngIf="!loading">
+    <div class="row h-100">
+      <div class="col-12 h-100">
+        <div class="card mb-4 h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Simulation: <small>{{simulation!.name}}</small></h5>
+
+            <i class="fa-solid fa-download pe-clickable" (click)="downloadJson()"></i>
+          </div>
+        
+          <div class="card-body">
+            <div class="alert alert-primary mb-2" role="alert">
+
+              <p class="mb-0"><i class="fa-solid fa-genderless"></i> Number of Maps: <span class="ms-2">{{simulation!.maps_count}}</span></p>
+              <p class="mb-0 mt-2"><i class="fa-solid fa-genderless"></i> Minimum Nodes Count: <span class="ms-2">{{simulation!.node_min}}</span></p>
+              <p class="mb-0"><i class="fa-solid fa-genderless"></i> Maximum Nodes Count: <span class="ms-2">{{simulation!.node_max}}</span></p>
+              <p class="mb-0 mt-2"><i class="fa-solid fa-genderless"></i> Minimum Edges Count: <span class="ms-2">{{simulation!.node_min}}</span></p>
+              <p class="mb-0"><i class="fa-solid fa-genderless"></i> Maximum Edges Count: <span class="ms-2">{{maxMapsValues.edges}}</span></p>
+            </div>
+
+            <label class="form-label">Scatter Plot Param:</label>
+            <div>
+              <button class="me-3 btn btn-secondary" (click)="updateChartType(0)" [ngClass]="{'btn-primary': current_chart_type == 0}">Entropy</button>
+              <button class="me-3 btn btn-secondary" (click)="updateChartType(1)" [ngClass]="{'btn-primary': current_chart_type == 1}">Entropy Percent</button>
+              <button class="btn btn-secondary" (click)="updateChartType(2)" [ngClass]="{'btn-primary': current_chart_type == 2}">Effort</button>
+            </div>
+
+            <form [formGroup]="simulationFilterForm" (ngSubmit)="renderScatterPlot(current_chart_type)" class="mt-3">
+              <div class="row">
+                <div class="col-6">
+                  <label for="node_min" class="form-label">Nodes Min:</label>
+                  <input type="text" class="form-control" id="node_min" name="node_min" placeholder="" formControlName="node_min">
+                </div>
+                <div class="col-6">
+                  <label for="node_max" class="form-label">Nodes Max:</label>
+                  <input type="text" class="form-control" id="node_max" name="node_max" placeholder="" formControlName="node_max">
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-6">
+                  <label for="edge_min" class="form-label">Edges Min:</label>
+                  <input type="text" class="form-control" id="edge_min" name="edge_min" placeholder="" formControlName="edge_min">
+                </div>
+                <div class="col-6">
+                  <label for="edge_max" class="form-label">Edges Max:</label>
+                  <input type="text" class="form-control" id="edge_max" name="edge_max" placeholder="" formControlName="edge_max">
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col-6">
+                  <label for="param_min" class="form-label">{{getChartTypeLabel(current_chart_type)}} Min:</label>
+                  <input type="text" class="form-control" id="param_min" name="param_min" placeholder="" formControlName="param_min">
+                </div>
+                <div class="col-6">
+                  <label for="param_max" class="form-label">{{getChartTypeLabel(current_chart_type)}} Max:</label>
+                  <input type="text" class="form-control" id="param_max" name="param_max" placeholder="" formControlName="param_max">
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-12 text-center">
+                  <button class="btn btn-primary me-3" type="submit" [disabled]="!simulationFilterForm.valid">Filter</button>
+                  <button class="btn btn-secondary" (click)="resetFilterForm(current_chart_type)">Reset</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-8" [ngClass]="{'d-none': loading}">
     <div class="card">
       <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Scatter Plot: <small>Entropy (H)</small></h5>
+        <h5 class="mb-0">Scatter Plot: <small>{{getChartTypeLabel(this.current_chart_type)}}</small></h5>
       </div>
     
-      <div class="card-body text-center">
-        <div id="container" class="chart-responsive"></div>
+      <div class="card-body text-center p-0">
+        <div id="container"></div>
       </div>
     </div>    
   </div>
 </div>
 
-
+<app-footer></app-footer>

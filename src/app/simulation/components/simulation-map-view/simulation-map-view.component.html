@@ -1,11 +1,19 @@
 
 <div class="modal-header">
-  <h4 class="modal-title pull-left">Graph</h4>
+  <h4 class="modal-title pull-left">Map Graph</h4>
   <button type="button" class="btn-close close pull-right" (click)="hideModal()">
     <span class="visually-hidden">&times;</span>
   </button>
 </div>
 
 <div class="modal-body">
+  <div class="alert alert-primary mb-0" role="alert">
+    <p class="mb-0"><i class="fa-solid fa-genderless"></i> Nodes Count: <span class="ms-2">{{map!.nodes_count}}</span></p>
+    <p class="mb-0"><i class="fa-solid fa-genderless"></i> Edges Count: <span class="ms-2">{{map!.edges_count}}</span></p>
+    <p class="mb-0"><i class="fa-solid fa-genderless"></i> Entropy (H): <span class="ms-2">{{map!.entropy.toFixed(2)}}</span></p>
+    <p class="mb-0"><i class="fa-solid fa-genderless"></i> Entropy Percent (Hr): <span class="ms-2">{{map!.entropy_percent.toFixed(2)}}</span></p>
+    <p class="mb-0"><i class="fa-solid fa-genderless"></i> Effort (M): <span class="ms-2">{{map!.effort.toFixed(2)}}</span></p>
+  </div>
+
   <div id="map"></div>
 </div>

@@ -5,5 +5,7 @@ export interface Simulation {
   maps_count: number,
   node_min: number,
   node_max: number,
-  maps?: SimulationMap[]
+  maps?: SimulationMap[],
+  is_public: boolean,
+  created_at?: number
 }

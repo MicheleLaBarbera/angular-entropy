@@ -41,3 +41,52 @@ a:hover {
 .pe-clickable {
   cursor: pointer;
 }
+
+.footer {
+  box-shadow: 0 2px 6px 0 rgb(67 89 113 / 12%);
+  background-color: white;
+}
+
+.custom-loader {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: 
+    radial-gradient(farthest-side,#766DF4 94%,#0000) top/8px 8px no-repeat,
+    conic-gradient(#0000 30%,#766DF4);
+  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation:s3 1s infinite linear;
+}
+
+@keyframes s3{ 
+  100%{transform: rotate(1turn)}
+}
+
+.custom-big-loader {
+  width: 88px;
+  height: 42.2px;
+  background: radial-gradient(circle closest-side,#474bff 90%,#0000) 0%   50%,
+         radial-gradient(circle closest-side,#474bff 90%,#0000) 50%  50%,
+         radial-gradient(circle closest-side,#474bff 90%,#0000) 100% 50%;
+  background-size: calc(100%/3) 21.1px;
+  background-repeat: no-repeat;
+  animation: dots-7ar3yq 1s infinite linear;
+}
+
+@keyframes dots-7ar3yq {
+  20% {
+     background-position: 0%   0%, 50%  50%,100%  50%;
+  }
+
+  40% {
+     background-position: 0% 100%, 50%   0%,100%  50%;
+  }
+
+  60% {
+     background-position: 0%  50%, 50% 100%,100%   0%;
+  }
+
+  80% {
+     background-position: 0%  50%, 50%  50%,100% 100%;
+  }
+}

@@ -39,7 +39,7 @@ export class SimulationMapViewComponent {
     let visitedNodes: any[] = [];
 
     let cx = width / 2;
-    let cy = nodeVerticalSpace;
+    let cy = 20;
 
     let nodeRadius = 5;
 

@@ -12,6 +12,8 @@ import { SimulationService } from '../../services/simulation.service';
 })
 export class SimulationCreateComponent {
 
+  public loading: boolean;
+
   public simulationCreateForm = this._fb.group({
     name: [null, Validators.required],
     maps_count: [null, [Validators.min(1), Validators.max(1000), Validators.required]],
@@ -21,6 +23,7 @@ export class SimulationCreateComponent {
   });
 
   constructor(private _fb: FormBuilder, private _simulationService: SimulationService, private _alertService: AlertService) { 
+    this.loading = false;
   }
 
   public onSubmit(): void {
@@ -28,18 +31,23 @@ export class SimulationCreateComponent {
       name: this.simulationCreateForm.value.name!,
       maps_count: this.simulationCreateForm.value.maps_count!,
       node_min: this.simulationCreateForm.value.node_min!,
-      node_max: this.simulationCreateForm.value.node_max!
+      node_max: this.simulationCreateForm.value.node_max!,
+      is_public: this.simulationCreateForm.value.is_public!
     };
 
+    this.loading = true;
     this._simulationService.createSimulation(simulation).subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         this._alertService.success("Simulation successfully generated");
-        this.simulationCreateForm.reset();
+        this.simulationCreateForm.reset({
+          is_public: false
+        });
       }
+      this.loading = false;
     });
   }
 
-  greaterThan(field: string): ValidatorFn {
+  public greaterThan(field: string): ValidatorFn {
     return (control: AbstractControl): {[key: string]: any} | null => {
       const group = control.parent;
       if(group) {

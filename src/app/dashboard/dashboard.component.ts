@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { SimulationService } from '../simulation/services/simulation.service';
+import { SimulationsCount } from '../simulation/models/SimulationsCount';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,9 +10,27 @@ import { Component } from '@angular/core';
 export class DashboardComponent {
   public generatedSimulations: number;
   public generatedMaps: number;
+  public loading: boolean;
+  
+  constructor(private _simulationService: SimulationService) {
+    this.generatedSimulations = 0;
+    this.generatedMaps = 0;
+    this.loading = true;
+  }
 
-  constructor() {
-    this.generatedSimulations = 23;
-    this.generatedMaps = 586;
+  ngOnInit() {
+    this._simulationService.getSimulationsCounts().subscribe(response => {
+      if(!response.hasOwnProperty('error')) {
+        let smc = <SimulationsCount>response;
+
+        this.generatedSimulations = smc.simulations_count;
+        this.generatedMaps = smc.simulations_maps_count;
+        this.loading= false;
+      }
+    });
+  }
+
+  public getCurrentYear(): number {
+    return new Date().getFullYear();
   }
 }

@@ -9,7 +9,7 @@ export interface SimulationMap {
   effort: number;
   nodes_count: number;
   simulation_id: string;
-  size: number;
   adjacency_matrix: number[][]
+  created_at: number
 }
 
