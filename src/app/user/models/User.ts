@@ -3,5 +3,7 @@ export interface User {
   email: string,
   firstname: string,
   lastname: string,
-  is_disabled: boolean,
+  password?: string,
+  is_disabled?: boolean,
+  role?: number
 }

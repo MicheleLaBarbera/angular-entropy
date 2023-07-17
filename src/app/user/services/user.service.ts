@@ -5,6 +5,7 @@ import { catchError, Observable } from 'rxjs';
 import { User } from '../models/User';
 import { HandleError, HttpErrorHandlerService } from 'src/app/shared/errors/http-error-handler.service';
 import { ServerError } from 'src/app/shared/models/ServerError';
+import { ClassroomHomework } from 'src/app/classroom/modules/classroom-homework/models/ClassroomHomework';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,12 @@ export class UserService {
     ) as Observable<User | ServerError>;
   }
 
+  public getCurrentUserHomeworks(): Observable<ClassroomHomework[] | ServerError> {
+    return this._http.get<ClassroomHomework[]>(this._userEndpointUrl + 'homeworks').pipe(
+      catchError(this._handleError('getCurrentUserHomeworks', { error: true }))
+    ) as Observable<ClassroomHomework[] | ServerError>;
+  }
+
   public authUser(username: string, password: string, remember_me: number): Observable<any>{
     let authObject = {
       username: username, 
@@ -33,6 +40,12 @@ export class UserService {
     return this._http.post<any>(this._userEndpointUrl + 'token', authObject)
     .pipe(
       catchError(this._handleError('authUser', { error: true }))
+    ) as Observable<User | ServerError>;
+  }
+
+  public createUser(user: User): Observable<User | ServerError> {
+    return this._http.post<User>(this._userEndpointUrl, user).pipe(
+      catchError(this._handleError('createUser', { error: true }))
     ) as Observable<User | ServerError>;
   }
 

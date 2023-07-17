@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { AlertService } from './alert/alert.service';
@@ -25,16 +24,14 @@ import { FooterComponent } from './footer/footer.component';
     FormsModule,
     ReactiveFormsModule,
     ModalModule.forRoot(),
-    TooltipModule.forRoot(),
     NgSelectModule,
-    RouterModule
+    RouterModule,
   ],
   exports: [
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     ModalModule,
-    TooltipModule,
     NgSelectModule,
     NavbarComponent,
     FooterComponent

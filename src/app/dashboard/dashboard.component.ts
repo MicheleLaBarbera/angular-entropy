@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { SimulationService } from '../simulation/services/simulation.service';
 import { SimulationsCount } from '../simulation/models/SimulationsCount';
+import { Router } from '@angular/router';
+import { User } from '../user/models/User';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,17 +10,27 @@ import { SimulationsCount } from '../simulation/models/SimulationsCount';
 })
 
 export class DashboardComponent {
-  public generatedSimulations: number;
+  /*public generatedSimulations: number;
   public generatedMaps: number;
-  public loading: boolean;
-  
-  constructor(private _simulationService: SimulationService) {
-    this.generatedSimulations = 0;
+  public loading: boolean;*/
+  public user!: User;
+
+  constructor(/*private _simulationService: SimulationService,*/ private _router: Router) {
+    /*this.generatedSimulations = 0;
     this.generatedMaps = 0;
-    this.loading = true;
+    this.loading = true;*/
   }
 
   ngOnInit() {
+    let currentUserData = JSON.parse(localStorage.getItem('currentUserData')!);
+
+    if(!currentUserData)      
+      this._router.navigate(['/users/auth']);
+    
+    this.user = currentUserData;
+  }
+
+  /*ngOnInit() {
     this._simulationService.getSimulationsCounts().subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         let smc = <SimulationsCount>response;
@@ -32,5 +44,5 @@ export class DashboardComponent {
 
   public getCurrentYear(): number {
     return new Date().getFullYear();
-  }
+  }*/
 }

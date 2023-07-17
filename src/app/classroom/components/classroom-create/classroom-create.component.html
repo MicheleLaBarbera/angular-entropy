@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-4 text-center"><i class="fa-solid fa-school"></i> Create Class</h4>
+
+    <form [formGroup]="classroomCreateForm" (ngSubmit)="onSubmit()" class="mb-3">
+      <div class="mb-3">
+        <label for="name" class="form-label">Class Name:</label>
+        <input type="text" class="form-control" id="name" name="classroom_name" placeholder="Enter a unique name" formControlName="name">
+      </div>
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Size (Max. number of students):</label>
+        <input type="text" class="form-control" id="name" name="classroom_size" placeholder="Enter a number above 1 and below 2000" formControlName="size">
+      </div>
+   
+      <div class="text-center">
+        <div *ngIf="loading" class="row mt-3">
+          <div class="col-5"></div>
+          <div class="col-2 ms-3">
+            <div class="custom-loader text-center"></div>
+          </div>
+        </div>
+        <button *ngIf="!loading" class="btn btn-primary d-grid w-100 mb-3" type="submit" [disabled]="!classroomCreateForm.valid">Create</button>
+      </div>
+    </form>
+  </div>
+</div>

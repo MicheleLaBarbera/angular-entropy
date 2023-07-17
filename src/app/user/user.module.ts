@@ -5,11 +5,13 @@ import { UserService } from './services/user.service';
 import { UserAuthComponent } from './components/user-auth/user-auth.component';
 import { UserRoutingModule } from './user-routing.module';
 import { UserLogoutComponent } from './components/user-logout/user-logout.component';
+import { UserCreateComponent } from './components/user-create/user-create.component';
 
 @NgModule({
   declarations: [
     UserAuthComponent,
-    UserLogoutComponent
+    UserLogoutComponent,
+    UserCreateComponent
   ],
   imports: [
     CommonModule,

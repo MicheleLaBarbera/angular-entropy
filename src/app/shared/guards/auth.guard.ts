@@ -40,6 +40,8 @@ export class AuthGuard implements CanActivate {
           this.router.navigate(['/users/logout']);
           return false;
         }
+        localStorage.removeItem('currentUserData');
+        localStorage.setItem('currentUserData', JSON.stringify(response));
         return true;
       })
     );

@@ -31,10 +31,36 @@
 }
 </style>
 
-<div class="mt-4 container-fluid">
+<div class="mt-4 container-fluid" *ngIf="user.role == 0">
+  <div class="row px-2 mb-1">
+    <div class="col-3"></div>
+    <div class="col-6 text-center">
+      <div class="alert alert-info fw-bold" role="alert">
+        <i class="fa-solid fa-graduation-cap me-4"></i>Welcome to the Student Dashboard!
+      </div>
+    </div>
+  </div>
   <div class="row px-2">
     <div class="col-6">
-      <div class="row mb-4">
+    </div>
+    <div class="col-6">
+      <app-classroom-list></app-classroom-list>
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 container-fluid" *ngIf="user.role == 1">
+  <div class="row px-2 mb-1">
+    <div class="col-3"></div>
+    <div class="col-6 text-center">
+      <div class="alert alert-info fw-bold" role="alert">
+        <i class="fa-solid fa-chalkboard-user me-4"></i>Welcome to the Teacher Dashboard!
+      </div>
+    </div>
+  </div>
+  <div class="row px-2">
+    <div class="col-6">
+      <!--<div class="row mb-4">
         <div class="col-6">
           <div class="card">
             <div class="card-body">
@@ -72,14 +98,28 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row mb-4">
         <div class="col-12">
           <app-simulation-search></app-simulation-search>
+        </div>
+      </div>-->
+      <div class="row">
+        <div class="col-12">
+          <app-classroom-create></app-classroom-create>
         </div>
       </div>
     </div>
     <div class="col-6">
-      <app-simulation-create></app-simulation-create>
+      <!--<div class="row mb-4">
+        <div class="col-12">
+          <app-simulation-create></app-simulation-create>
+        </div>
+      </div>-->
+      <div class="row mb-4">
+        <div class="col-12">
+          <app-classroom-list></app-classroom-list>
+        </div>
+      </div>
     </div>
   </div>
 </div>

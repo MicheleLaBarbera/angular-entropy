@@ -35,15 +35,31 @@
           </div>
 
           <h4 class="mb-2">Welcome to CMGen!</h4>
-          <p class="mb-0">Please sign-in to your account and start the adventure</p>
-          <a class="align-end mb-4" routerLink="/users/signup">
-            <small>Sign-up if you don't have an account</small>
+          <p class="mb-0">Please sign-up an account to start the adventure</p>
+          <a class="align-end mb-4" routerLink="/users/auth">
+            <small>Sign-in if you already have an account</small>
           </a>
 
-          <form [formGroup]="userAuthForm" (ngSubmit)="onSubmit()" class="mb-3 mt-3">
+          <form [formGroup]="userCreateForm" (ngSubmit)="onSubmit()" class="mb-3 mt-3">
+            <div class="row mb-3">
+              <div class="col-6">
+                <label for="firstname" class="form-label">Firstname</label>
+                <input type="text" class="form-control" id="firstname" name="user_firstname" placeholder="Enter your firstname" formControlName="firstname">
+              </div>
+              <div class="col-6">
+                <label for="lastname" class="form-label">Lastname</label>
+                <input type="text" class="form-control" id="lastname" name="user_lastname" placeholder="Enter your lastname" formControlName="lastname">
+              </div>
+            </div>
+
             <div class="mb-3">
               <label for="name" class="form-label">Username</label>
-              <input type="text" class="form-control" id="name" name="user_name" placeholder="Enter your username" formControlName="username">
+              <input type="text" class="form-control" id="name" name="user_name" placeholder="Enter a unique username" formControlName="username">
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">E-Mail</label>
+              <input type="text" class="form-control" id="email" name="user_email" placeholder="Enter your email address" formControlName="email">
             </div>
 
             <div class="mb-3">
@@ -51,11 +67,6 @@
                 <label for="password" class="form-label">Password</label>
               </div>
               <input type="password" class="form-control" id="password" name="user_password" placeholder="············" formControlName="password">
-            </div>
-
-            <div class="mb-2 form-check">
-              <input class="form-check-input" type="checkbox" id="remember_me" formControlName="remember_me">
-              <label class="form-label" for="remember_me">Remember Me</label>
             </div>
 
             <div class="mb-3">
@@ -66,7 +77,7 @@
                 </div>
               </div>
       
-              <button *ngIf="!loading" class="btn btn-primary d-grid w-100" type="submit" [disabled]="!userAuthForm.valid">Sign in</button>
+              <button *ngIf="!loading" class="btn btn-primary d-grid w-100" type="submit" [disabled]="!userCreateForm.valid">Sign up</button>
             </div>
           </form>
         </div>

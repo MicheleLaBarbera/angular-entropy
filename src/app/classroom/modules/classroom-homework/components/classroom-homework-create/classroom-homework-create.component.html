@@ -1,0 +1,49 @@
+<div class="card">
+  <div class="card-body">
+    <h4 class="mb-4 text-center"><i class="fa-solid fa-file-pen"></i> Create Homework</h4>
+
+    <form [formGroup]="classroomHomeworkCreateForm" (ngSubmit)="onSubmit()" class="mb-3">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title:</label>
+        <input type="text" class="form-control" id="title" name="homework_title" placeholder="Enter the homework title" formControlName="title">
+      </div>
+
+      <div class="mb-3">
+        <label for="body" class="form-label">Body:</label>
+        <textarea rows="3" class="form-control" id="body" name="homework_body" placeholder="Enter the homework text" formControlName="body"></textarea>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-6">
+          <label for="node_min" class="form-label">Concept Map Minimum Nodes Count:</label>
+          <input type="text" class="form-control" id="node_min" name="homework_node_min" placeholder="Enter a number above 1" formControlName="node_min">  
+        </div>
+        <div class="col-6">
+          <label for="node_max" class="form-label">Concept Map Maximum Nodes Count:</label>
+          <input type="text" class="form-control" id="node_max" name="homework_node_max" placeholder="Enter a number equal or below 30" formControlName="node_max">
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-6">
+          <label for="start_date" class="form-label">Start date:</label>
+          <input type="datetime-local" class="form-control" id="start_date" name="homework_start_date" formControlName="start_date">
+        </div>
+        <div class="col-6">
+          <label for="expire_date" class="form-label">Expire date:</label>
+          <input type="datetime-local" class="form-control" id="expire_date" name="homework_expire_date" formControlName="expire_date">
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <div *ngIf="loading" class="row mt-3">
+          <div class="col-5"></div>
+          <div class="col-2 ms-3">
+            <div class="custom-loader text-center"></div>
+          </div>
+        </div>
+        <button *ngIf="!loading" class="btn btn-primary d-grid w-100 mb-3" type="submit" [disabled]="!classroomHomeworkCreateForm.valid">Create</button>
+      </div>
+    </form>
+  </div>
+</div>

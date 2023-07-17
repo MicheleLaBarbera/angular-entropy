@@ -1,0 +1,47 @@
+<app-navbar></app-navbar>
+
+<div class="row mt-5 g-0" *ngIf="loading">
+  <div class="col-5"></div>
+  <div class="col-2 ms-5 mt-5">
+    <div class="ms-3 custom-big-loader mt-5"></div>
+  </div>
+</div>
+
+<div class="mt-4 container-fluid" *ngIf="!loading && classroom">
+  <div class="row px-2 mb-1">
+    <div class="col-3"></div>
+    <div class="col-6 text-center">
+      <div class="alert alert-primary" role="alert">
+        <strong>Class:</strong> {{classroom.name}} <br>
+        <strong>Teacher:</strong> {{classroom.teacher?.firstname}} {{classroom.teacher?.lastname}} ({{classroom.teacher?.email}})
+      </div>
+    </div>
+  </div>
+
+  <div class="row px-2" *ngIf="user.role == 1">
+    <div class="col-6">
+      <app-classroom-homework-create></app-classroom-homework-create>
+    </div>
+    <div class="col-6">
+      <div class="row mb-4">
+        <div class="col-12" *ngIf="classroom">
+          <app-classroom-homework-list [classroom]="classroom"></app-classroom-homework-list>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <app-classroom-student-list [classroom]="classroom"></app-classroom-student-list>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row px-2" *ngIf="user.role == 0">
+    <div class="col-6" *ngIf="classroom">
+      <app-classroom-homework-list [classroom]="classroom"></app-classroom-homework-list>
+    </div>
+    <div class="col-6" *ngIf="classroom">
+      <app-classroom-student-list [classroom]="classroom"></app-classroom-student-list>
+    </div>
+  </div>
+</div>

@@ -19,9 +19,14 @@ export class UserAuthComponent {
     remember_me: [''],
   }, {});
 
-  constructor(private _fb: FormBuilder, private _userService: UserService, private _router: Router) { }
+  public loading: boolean;
+
+  constructor(private _fb: FormBuilder, private _userService: UserService, private _router: Router) { 
+    this.loading = false;
+  }
 
   public onSubmit() {
+    this.loading = true;
     this._userService.authUser(this.userAuthForm.value.username!, this.userAuthForm.value.password!, +this.userAuthForm.value.remember_me!).subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         let tokenPayload: any = jwt_decode(response.access_token);
@@ -33,6 +38,7 @@ export class UserAuthComponent {
 
         this._router.navigate(['/']);
       } 
+      this.loading = false;
     });
   }
 }
