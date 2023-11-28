@@ -25,8 +25,8 @@ export class UserService {
     ) as Observable<User | ServerError>;
   }
 
-  public getCurrentUserHomeworks(): Observable<ClassroomHomework[] | ServerError> {
-    return this._http.get<ClassroomHomework[]>(this._userEndpointUrl + 'homeworks').pipe(
+  public getCurrentUserHomeworks(active: boolean = true): Observable<ClassroomHomework[] | ServerError> {
+    return this._http.get<ClassroomHomework[]>(this._userEndpointUrl + 'homeworks' + ((active) ? '/' : '/expired')).pipe(
       catchError(this._handleError('getCurrentUserHomeworks', { error: true }))
     ) as Observable<ClassroomHomework[] | ServerError>;
   }

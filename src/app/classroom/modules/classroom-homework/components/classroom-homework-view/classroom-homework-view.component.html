@@ -8,14 +8,14 @@
 </div>
 
 <div class="mt-4 container-fluid h-75">
-  <div class="row px-2 mb-4">
+  <div class="row px-2 mb-4" *ngIf="homework">
     <div class="col-12">
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col-3">
-              <strong>Start Datetime:</strong> {{getDateLabel(homework.start_datetime)}}<br>
-              <strong>Expire Datetime:</strong> {{getDateLabel(homework.expire_datetime)}}<br>
+              <strong>Start Datetime:</strong> {{homework.start_datetime | dateLabel}}<br>
+              <strong>Expire Datetime:</strong> {{homework.expire_datetime | dateLabel}}<br>
               <strong>Node Min:</strong> {{homework.node_min}}<br>
               <strong>Node Max:</strong> {{homework.node_max}}
             </div>
@@ -38,12 +38,12 @@
         <div class="col-12 h-100 ps-0">
           <div class="card mb-4 h-100">
             <div class="card-body">
-              <div class="alert alert-primary mb-2" role="alert">
+              <div class="alert alert-primary mb-2" role="alert" *ngIf="simulation">
 
-                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Number of Maps: <span class="ms-2">{{simulation!.maps_count}}</span></p>
+                <p class="mb-0"><i class="fa-solid fa-genderless"></i> Number of Maps: <span class="ms-2">{{simulation!.maps?.length}}</span></p>
                 <p class="mb-0 mt-2"><i class="fa-solid fa-genderless"></i> Minimum Nodes Count: <span class="ms-2">{{simulation!.node_min}}</span></p>
                 <p class="mb-0"><i class="fa-solid fa-genderless"></i> Maximum Nodes Count: <span class="ms-2">{{simulation!.node_max}}</span></p>
-                <p class="mb-0 mt-2"><i class="fa-solid fa-genderless"></i> Minimum Edges Count: <span class="ms-2">{{simulation!.node_min}}</span></p>
+                <p class="mb-0 mt-2"><i class="fa-solid fa-genderless"></i> Minimum Edges Count: <span class="ms-2">{{simulation!.node_min - 1}}</span></p>
                 <p class="mb-0"><i class="fa-solid fa-genderless"></i> Maximum Edges Count: <span class="ms-2">{{maxMapsValues.edges}}</span></p>
               </div>
 
@@ -110,11 +110,11 @@
     </div>
   </div>
 
-  <div class="row px-2 h-100" *ngIf="user.role == 0">
+  <div class="row px-2 h-100" *ngIf="user.role == 0 && homework">
     <div class="col-3" *ngIf="homework.student_map">
       <div class="card mb-4">
         <div class="card-body">
-          <strong>Submitted at:</strong> {{getDateLabel(homework.student_map.created_at!)}}<br> <br>
+          <strong>Submitted at:</strong> {{homework.student_map.created_at! | dateLabel}}<br> <br>
           <strong>Entropy (H):</strong> {{homework.student_map.entropy!.toFixed(2)}}<br>
           <strong>Entropy Percent (Hr):</strong> {{homework.student_map.entropy_percent!.toFixed(2)}}<br>
           <strong>Effort (M):</strong> {{homework.student_map.effort!.toFixed(2)}}<br>

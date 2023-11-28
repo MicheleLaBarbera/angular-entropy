@@ -8,13 +8,19 @@ import { ClassroomHomeworkListComponent } from './components/classroom-homework-
 import { ClassroomHomeworkViewComponent } from './components/classroom-homework-view/classroom-homework-view.component';
 import { ClassroomHomeworkRoutingModule } from './classroom-homework-routing.module';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { DateLabelPipe } from 'src/app/_utils/date-label.pipe';
+import { ClassroomHomeworkMapViewComponent } from './components/classroom-homework-map-view/classroom-homework-map-view.component';
+import { ClassroomHomeworkListCardsComponent } from './components/classroom-homework-list-cards/classroom-homework-list-cards.component';
 
 
 @NgModule({
   declarations: [
     ClassroomHomeworkCreateComponent,
     ClassroomHomeworkListComponent,
-    ClassroomHomeworkViewComponent
+    ClassroomHomeworkViewComponent,
+    DateLabelPipe,
+    ClassroomHomeworkMapViewComponent,
+    ClassroomHomeworkListCardsComponent
   ],
   imports: [
     CommonModule,
@@ -25,7 +31,8 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
   ],
   exports: [
     ClassroomHomeworkCreateComponent,
-    ClassroomHomeworkListComponent
+    ClassroomHomeworkListComponent,
+    ClassroomHomeworkListCardsComponent
   ],
   providers: [
     ClassroomHomeworkService

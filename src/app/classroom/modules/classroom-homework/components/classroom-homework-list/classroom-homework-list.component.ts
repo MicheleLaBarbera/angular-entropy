@@ -68,14 +68,4 @@ export class ClassroomHomeworkListComponent {
       });
     }
   }
-
-  public getDateLabel(timestamp: number) {
-    const date = new Date(timestamp * 1000);
-
-    return date.toLocaleDateString("en-GB", { // you can use undefined as first argument
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }) + " - " + date.getHours() + ":" + date.getMinutes();
-  }
 }

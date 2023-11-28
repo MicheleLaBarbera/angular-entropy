@@ -1,0 +1,40 @@
+<div class="row g-0 h-75">
+  <div class="col-12 col-sm-4 g-0 h-100">
+    <div class="card d-flex flex-row align-items-center justify-content-start h-25 py-4 px-2 border-1 rounded-0 border-top-0 border-start-0 border-bottom">
+
+      <img class="img-fluid avatar ms-5 me-3" src="/assets/images/avatar.png" alt="Avatar">
+      <div class="d-flex flex-column">
+        <p class="text-black fs-4 fw-light mb-0">{{user.firstname}} {{user.lastname}}</p>
+        <p class="text-black fs-6 fw-light mb-0">{{user.email}}</p>
+      </div>
+    </div>
+    <div class="card py-3 px-2 border-1 rounded-0 border-top-0 border-start-0 border-bottom">
+      <div class="row g-0">
+        <div class="col-12 px-5">
+          <p class="text-black fs-3 fw-light mb-0">Expired Homeworks</p>
+          <app-classroom-homework-list-cards [active]="false"></app-classroom-homework-list-cards>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-4 h-100">
+    <div class="card h-100 py-4 px-2 border-1 rounded-0 border-top-0 border-start-0 border-end border-bottom">
+      <div class="row g-0">
+        <div class="col-12 px-5">
+          <p class="text-black fs-3 fw-light mb-0">Classes</p>
+          <app-classroom-list-cards></app-classroom-list-cards>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-4 h-100">
+    <div class="card h-100 py-4 px-2 border-1 rounded-0 border-top-0 border-start-0 border-bottom">
+      <div class="row g-0">
+        <div class="col-12 px-5">
+          <p class="text-black fs-3 fw-light mb-0">Active Homeworks</p>
+          <app-classroom-homework-list-cards [active]="true"></app-classroom-homework-list-cards>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

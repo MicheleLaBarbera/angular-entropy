@@ -10,6 +10,8 @@ import { ClassroomViewComponent } from './components/classroom-view/classroom-vi
 import { ClassroomListComponent } from './components/classroom-list/classroom-list.component';
 import { ClassroomHomeworkModule } from './modules/classroom-homework/classroom-homework.module';
 import { ClassroomStudentListComponent } from './components/classroom-student-list/classroom-student-list.component';
+import { DateLabelPipe } from '../_utils/date-label.pipe';
+import { ClassroomListCardsComponent } from './components/classroom-list-cards/classroom-list-cards.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +19,8 @@ import { ClassroomStudentListComponent } from './components/classroom-student-li
     ClassroomInviteLinkComponent,
     ClassroomViewComponent,
     ClassroomListComponent,
-    ClassroomStudentListComponent
+    ClassroomStudentListComponent,
+    ClassroomListCardsComponent,
   ],
   imports: [
     CommonModule,
@@ -28,7 +31,8 @@ import { ClassroomStudentListComponent } from './components/classroom-student-li
   ],
   exports: [
     ClassroomCreateComponent,
-    ClassroomListComponent
+    ClassroomListComponent,
+    ClassroomListCardsComponent
   ],
   providers: [
     ClassroomService

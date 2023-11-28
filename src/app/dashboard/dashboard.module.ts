@@ -6,10 +6,13 @@ import { SimulationModule } from '../simulation/simulation.module';
 import { SharedModule } from '../shared/shared.module';
 import { UserModule } from '../user/user.module';
 import { ClassroomModule } from '../classroom/classroom.module';
+import { DashboardStudentComponent } from './components/dashboard-student/dashboard-student.component';
+import { ClassroomHomeworkModule } from '../classroom/modules/classroom-homework/classroom-homework.module';
 
 @NgModule({
   declarations: [
-    DashboardComponent
+    DashboardComponent,
+    DashboardStudentComponent
   ],
   imports: [
     CommonModule,
@@ -17,6 +20,7 @@ import { ClassroomModule } from '../classroom/classroom.module';
     SharedModule,
     SimulationModule,
     ClassroomModule,
+    ClassroomHomeworkModule,
     UserModule,
   ],
 })

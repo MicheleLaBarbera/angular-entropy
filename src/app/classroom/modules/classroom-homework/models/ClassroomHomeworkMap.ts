@@ -11,5 +11,8 @@ export interface ClassroomHomeworkMap {
   created_at?: number,
   entropy?: number,
   entropy_percent?: number,
-  effort?: number
+  effort?: number,
+  color_entropy?: number,
+  color_entropy_percent?: number,
+  color_effort?: number,
 }

@@ -1,4 +1,4 @@
-.card {
+/*.card {
   background-clip: padding-box;
   box-shadow: 0 2px 6px 0 rgb(67 89 113 / 12%);
 }
@@ -6,4 +6,10 @@
 .card-body {
   flex: 1 1 auto;
   padding: 1.5rem 1.5rem;
+}*/
+
+
+.card-class-list:hover {
+  background-color: #eee;
+  cursor: pointer;
 }

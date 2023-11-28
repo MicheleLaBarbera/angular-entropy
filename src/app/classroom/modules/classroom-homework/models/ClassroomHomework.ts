@@ -13,6 +13,7 @@ export interface ClassroomHomework {
   expire_datetime: number;
   student_map?: ClassroomHomeworkMap | null;
   maps?: ClassroomHomeworkMap[]
+  status?: number;
 }
 
 export enum CLASSROOM_HOMEWORK_ACTION { CREATE, UPDATE, DELETE };

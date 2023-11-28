@@ -28,8 +28,8 @@
           <tr *ngFor="let homework of homeworks" class="text-center">
             <td>{{homework.title}}</td>
             <td *ngIf="classroom">{{homework.maps?.length}} / {{classroom.size}}</td>
-            <td>{{getDateLabel(homework.start_datetime)}}</td>
-            <td>{{getDateLabel(homework.expire_datetime)}}</td>
+            <td>{{homework.start_datetime | dateLabel}}</td>
+            <td>{{homework.expire_datetime | dateLabel}}</td>
             <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Enter homework" style="color:darkgreen" [routerLink]="['homeworks/' + homework._id!.$oid]"></i></td>
           </tr>
         </tbody>
