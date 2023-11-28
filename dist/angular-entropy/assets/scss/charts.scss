@@ -1,0 +1,11 @@
+.chart-responsive {
+  width: 79vw; 
+  height: 60vh;
+} 
+    
+@include media-breakpoint-up(lg) { 
+  .chart-responsive{
+    width: 46vw; 
+    height: 60vh;
+  } 
+}

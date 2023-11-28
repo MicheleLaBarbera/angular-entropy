@@ -1,0 +1,37 @@
+$btn-primary-bg: #696cff;
+$btn-primary-border-color: #696cff;
+$btn-primary-color: #fff;
+
+$btn-primary-hover-bg: #5f61e6;
+$btn-primary-hover-border-color: #5f61e6;
+$btn-primary-hover-color: #fff;
+
+$btn-primary-active-bg: #595cd9;
+$btn-primary-active-border-color: #595cd9;
+$btn-primary-active-color: #fff;
+
+$btn-primary-disabled-bg: #696cffde;
+$btn-primary-disabled-border-color: #696cffde;
+$btn-primary-disabled-color: #fff;
+
+$btn-primary-box-shadow-color: rgb(105 108 255 / 40%);
+
+.btn-primary {
+  @include button-variant(
+    $btn-primary-bg, 
+    $btn-primary-border-color, 
+    $btn-primary-color,  
+    $btn-primary-hover-bg, 
+    $btn-primary-hover-border-color, 
+    $btn-primary-hover-color, 
+    $btn-primary-active-bg,
+    $btn-primary-active-border-color, 
+    $btn-primary-active-color,
+    $btn-primary-disabled-bg,
+    $btn-primary-disabled-border-color,
+    $btn-primary-disabled-color
+  );
+
+  box-shadow: 0 0.125rem 0.25rem 0 $btn-primary-box-shadow-color;
+
+}
