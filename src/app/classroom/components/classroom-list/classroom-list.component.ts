@@ -51,6 +51,30 @@ export class ClassroomListComponent {
   }
 
   public copyLink(invite_token: string) {
-    navigator.clipboard.writeText("http://localhost:4200/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText("http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));;
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = "http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token;
+  
+      // Move the textarea outside the viewport to make it invisible
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-99999999px';
+  
+      document.body.prepend(textarea);
+  
+      // highlight the content of the textarea element
+      textarea.select();
+  
+      try {
+        document.execCommand('copy');
+        this._alertService.success("Invite link copied successfully");
+      } catch (err) {
+        console.log(err);
+      } finally {
+        textarea.remove();
+      }
+    }
+    //navigator.clipboard.writeText("http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));
   }
 }
