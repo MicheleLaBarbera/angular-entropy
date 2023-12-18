@@ -327,7 +327,8 @@ export class ClassroomHomeworkViewComponent {
       adjacency_matrix_labels: links_labels
     };
     this._classroomHomeworkService.createClassroomHomeworkMap(this.classroom_id, this.homework_id, homework_map).subscribe(response => {
-      console.log(response)
+      window.location.reload();
+      this._alertService.success("Homework submitted.");
     });
 
   }
