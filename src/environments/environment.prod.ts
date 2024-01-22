@@ -1,4 +1,5 @@
 export const environment = {
-  apiEndpointUrl: 'http://vps-ad2247da.vps.ovh.net:3000/',
+  apiEndpointUrl: 'http://51.38.225.178:3000/',
+  endpointUrl: 'http://51.38.225.178:81/',
   production: false
 };

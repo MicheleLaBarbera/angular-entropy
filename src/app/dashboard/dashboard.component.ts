@@ -10,15 +10,15 @@ import { User } from '../user/models/User';
 })
 
 export class DashboardComponent {
-  /*public generatedSimulations: number;
+  public generatedSimulations: number;
   public generatedMaps: number;
-  public loading: boolean;*/
+  public loading: boolean;
   public user!: User;
 
-  constructor(/*private _simulationService: SimulationService,*/ private _router: Router) {
-    /*this.generatedSimulations = 0;
+  constructor(private _simulationService: SimulationService, private _router: Router) {
+    this.generatedSimulations = 0;
     this.generatedMaps = 0;
-    this.loading = true;*/
+    this.loading = true;
   }
 
   ngOnInit() {
@@ -28,9 +28,7 @@ export class DashboardComponent {
       this._router.navigate(['/users/auth']);
     
     this.user = currentUserData;
-  }
 
-  /*ngOnInit() {
     this._simulationService.getSimulationsCounts().subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         let smc = <SimulationsCount>response;
@@ -44,5 +42,5 @@ export class DashboardComponent {
 
   public getCurrentYear(): number {
     return new Date().getFullYear();
-  }*/
+  }
 }

@@ -4,6 +4,7 @@ import { ClassroomService } from '../../services/classroom.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { Router } from '@angular/router';
 import { User } from 'src/app/user/models/User';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-classroom-list',
@@ -52,10 +53,10 @@ export class ClassroomListComponent {
 
   public copyLink(invite_token: string) {
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText("http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));;
+      navigator.clipboard.writeText(environment.endpointUrl + "/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));;
     } else {
       const textarea = document.createElement('textarea');
-      textarea.value = "http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token;
+      textarea.value = environment.endpointUrl + "/classrooms/invite/" + invite_token;
   
       // Move the textarea outside the viewport to make it invisible
       textarea.style.position = 'absolute';
@@ -75,6 +76,6 @@ export class ClassroomListComponent {
         textarea.remove();
       }
     }
-    //navigator.clipboard.writeText("http://vps-ad2247da.vps.ovh.net:81/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));
+    //navigator.clipboard.writeText(environment.endpointUrl + "classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));
   }
 }
