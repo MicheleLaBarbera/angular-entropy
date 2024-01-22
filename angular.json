@@ -44,7 +44,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "allowedCommonJsDependencies": [
-              "scatter-gl"
+              "scatter-gl", "stream", "assert"
             ],
             "outputPath": "dist/angular-entropy",
             "index": "src/index.html",

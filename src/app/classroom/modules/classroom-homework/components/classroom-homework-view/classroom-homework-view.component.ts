@@ -7,7 +7,7 @@ import { ClassroomHomeworkService } from '../../services/classroom-homework.serv
 import { DagreSettings, Edge, Orientation, Node } from '@swimlane/ngx-graph';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AlertService } from 'src/app/shared/alert/alert.service';
-import * as Plotly from 'plotly.js-dist-min'
+import * as Plotly from 'plotly.js'
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ClassroomHomeworkMapViewComponent } from '../classroom-homework-map-view/classroom-homework-map-view.component';
 

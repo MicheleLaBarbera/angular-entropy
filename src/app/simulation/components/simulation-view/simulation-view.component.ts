@@ -7,7 +7,7 @@ import { SimulationMap } from '../../models/SimulationMap';
 import { SimulationMapViewComponent } from '../simulation-map-view/simulation-map-view.component';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
-import * as Plotly from 'plotly.js-dist-min'
+import * as Plotly from 'plotly.js'
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export interface GraphNode {
