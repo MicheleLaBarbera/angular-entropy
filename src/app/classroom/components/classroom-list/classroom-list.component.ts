@@ -53,10 +53,10 @@ export class ClassroomListComponent {
 
   public copyLink(invite_token: string) {
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(environment.endpointUrl + "/classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));;
+      navigator.clipboard.writeText(environment.endpointUrl + "classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));;
     } else {
       const textarea = document.createElement('textarea');
-      textarea.value = environment.endpointUrl + "/classrooms/invite/" + invite_token;
+      textarea.value = environment.endpointUrl + "classrooms/invite/" + invite_token;
   
       // Move the textarea outside the viewport to make it invisible
       textarea.style.position = 'absolute';
