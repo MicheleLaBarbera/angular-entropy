@@ -1,0 +1,123 @@
+  <div class="card mx-2 h-85">
+    <div class="card-body h-100">
+
+      <div class="row px-2 mb-3">
+        <div class="col-10">
+
+        </div>
+        <div class="col-2 align-items-right">
+          <button class="btn btn-success d-grid w-100" (click)="submitHomework()" [disabled]="!isValidGraph">Submit</button>
+        </div>
+      </div>
+
+      <div class="row px-2 h-90" *ngIf="homework">
+        <div class="col-3" *ngIf="homework.student_map">
+          <div class="card mb-4">
+            <div class="card-body">
+              <strong>Submitted at:</strong> {{homework.student_map.created_at! | dateLabel}}<br> <br>
+              <strong>Entropy (H):</strong> {{homework.student_map.entropy!.toFixed(2)}}<br>
+              <strong>Entropy Percent (Hr):</strong> {{homework.student_map.entropy_percent!.toFixed(2)}}<br>
+              <strong>Effort (M):</strong> {{homework.student_map.effort!.toFixed(2)}}<br>
+            </div>
+          </div>
+        </div>
+        <div class="col-3 h-100" *ngIf="!homework.student_map">
+          <div class="card h-100">
+            <div class="card-body">      
+              <form [formGroup]="nodeCreateForm" (ngSubmit)="onSubmitNode()">
+                <div class="mb-3">
+                  <label for="title" class="form-label">Node Name:</label>
+                  <input type="text" class="form-control" id="node_name" name="node_name" formControlName="name">
+                </div>
+
+                <div class="text-center">
+                  <button class="btn btn-primary d-grid w-100" type="submit" [disabled]="!nodeCreateForm.valid">Add</button>
+                </div>
+              </form>
+
+              <div class="my-3">
+                <label for="source_node" class="form-label">Source Node:</label>
+                <ng-select id="source_node" name="source_node" [items]="nodes" 
+                          bindLabel="label" 
+                          bindValue="id" 
+                          [(ngModel)]="sourceLinkNodeId">
+                </ng-select>
+              </div>
+
+              <div class="mb-3">
+                <label for="target_node" class="form-label">Target Node:</label>
+                <ng-select id="target_node" name="target_node" [items]="nodes" 
+                          bindLabel="label" 
+                          bindValue="id" 
+                          [(ngModel)]="targetLinkNodeId">
+                </ng-select>
+              </div>
+
+              <div class="mb-3">
+                <label for="link_label" class="form-label">Label:</label>
+                <input type="text" class="form-control" id="link_label" name="link_label" [(ngModel)]="labelLink">
+              </div>
+
+              <div class="text-center">
+                <button class="btn btn-primary d-grid w-100" (click)="linkNodes()" [disabled]="!sourceLinkNodeId || !targetLinkNodeId || !labelLink">Link</button>
+              </div>
+            </div>
+          </div>
+
+         
+        </div>
+        <div class="col-9 h-100">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="h-100">
+              <ngx-graph
+                [showMiniMap]="false"
+                [layoutSettings]="layoutSettings"
+                [links]="links"
+                [nodes]="nodes"
+                [autoCenter]="true"
+              >
+                <ng-template #defsTemplate>
+                  <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+                    <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
+                  </svg:marker>
+                </ng-template>
+              
+                <ng-template #nodeTemplate let-node>
+                  <svg:g class="node">
+                    <svg:rect
+                      rx="15"
+                      [attr.width]="node.dimension.width"
+                      [attr.height]="node.dimension.height"
+                      [attr.fill]="node.data.color"
+                    />
+                    <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
+                      {{node.label}}
+                    </svg:text>
+                  </svg:g>
+                </ng-template>
+              
+                <ng-template #linkTemplate let-link>
+                  <svg:g class="edge">
+                    <svg:path class="line" stroke-width="2" marker-end="url(#arrow)"></svg:path>
+                    <svg:text class="edge-label" text-anchor="middle">
+                      <textPath
+                        class="text-path"
+                        [attr.href]="'#' + link.id"
+                        [style.dominant-baseline]="link.dominantBaseline"
+                        startOffset="50%"
+                      >
+                        {{link.label}}
+                      </textPath>
+                    </svg:text>
+                  </svg:g>
+                </ng-template>
+              </ngx-graph>
+            </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
