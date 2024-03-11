@@ -169,6 +169,81 @@ export class ClassroomHomeworkMapCreateComponent {
 
   }
 
+  isValidConceptualMap(adjacencyMatrix: number[][]): boolean {
+    let validRootCount = 0;
+  
+    // Check for cycles
+    if (this.hasCycle(adjacencyMatrix)) {
+      return false;
+    }
+  
+    for (let i = 0; i < adjacencyMatrix.length; i++) {
+      if (validRootCount > 1) {
+        return false;
+      }
+  
+      const isLeaf = adjacencyMatrix[i].every((value) => value === 0);
+  
+      if (isLeaf) {
+        let validLeaf = false;
+        for (let k = 0; k < adjacencyMatrix.length; k++) {
+          if (adjacencyMatrix[k][i]) {
+            validLeaf = true;
+            break; // It's a leaf
+          }
+        }
+        if (!validLeaf) {
+          return false;
+        }
+      } else {
+        // Check if it's a root
+        const isRoot = !adjacencyMatrix.some((row) => row[i]);
+  
+        if (isRoot) {
+          validRootCount++;
+        }
+      }
+    }
+  
+    return true;
+  }
+  
+  // New function to check for cycles
+  hasCycle(adjacencyMatrix: number[][]): boolean {
+    const visited: boolean[] = Array(adjacencyMatrix.length).fill(false);
+    const stack: number[] = [];
+  
+    const isCyclic = (node: number): boolean => {
+      if (stack.includes(node)) {
+        return true;
+      }
+  
+      if (visited[node]) {
+        return false;
+      }
+  
+      visited[node] = true;
+      stack.push(node);
+  
+      for (let neighbor = 0; neighbor < adjacencyMatrix.length; neighbor++) {
+        if (adjacencyMatrix[node][neighbor] && isCyclic(neighbor)) {
+          return true;
+        }
+      }
+  
+      stack.pop();
+      return false;
+    };
+  
+    for (let i = 0; i < adjacencyMatrix.length; i++) {
+      if (!visited[i] && isCyclic(i)) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+
   checkDAG(): boolean {
     // Minimum number of nodes check
     if (this.nodes.length < this.homework.node_min) {
@@ -185,78 +260,9 @@ export class ClassroomHomeworkMapCreateComponent {
       this.adjacencyMatrix[i][j] = 1;
     }
 
-    // Check if the graph is connected (optional)
-    // You might want to comment out this line if not needed
-    if (!this.isConnected(this.adjacencyMatrix)) {
-      console.log("Graph is not connected")
-      return false;
-    }
-
     // Check if the graph is a DAG (Directed Acyclic Graph)
-    return this.isDAG(this.adjacencyMatrix);
+    console.log(this.adjacencyMatrix)
+    return this.isValidConceptualMap(this.adjacencyMatrix);
   }
 
-  isDAG(adjacencyMatrix: number[][]): boolean {
-    const n = adjacencyMatrix.length;
-    const visited: boolean[] = Array(n).fill(false);
-    const recursionStack: boolean[] = Array(n).fill(false); // Track nodes in the current DFS path
-
-    for (let node = 0; node < n; node++) {
-      if (!visited[node] && this.isCyclic(node, visited, recursionStack, adjacencyMatrix)) {
-        console.log("Cycle detected")
-        return false; // Cycle detected
-      }
-    }
-    console.log("No cycle found")
-    return true; // No cycles found
-  }
-
-  isCyclic(node: number, visited: boolean[], recursionStack: boolean[], adjacencyMatrix: number[][]): boolean {
-    visited[node] = true;
-    recursionStack[node] = true; // Mark node as part of the current DFS path
-
-    for (let neighbor = 0; neighbor < adjacencyMatrix[node].length; neighbor++) {
-      if (adjacencyMatrix[node][neighbor] === 1) {
-        if (!visited[neighbor]) {
-          if (this.isCyclic(neighbor, visited, recursionStack, adjacencyMatrix)) {
-            return true; // Cycle found in a deeper recursion
-          }
-        } else if (recursionStack[neighbor]) {
-          return true; // Back edge detected (cycle)
-        }
-      }
-    }
-
-    recursionStack[node] = false; // Remove node from the current DFS path
-    return false; // No cycle found in this branch
-  }
-
-  isConnected(adjacencyMatrix: number[][]): boolean {
-    const n = adjacencyMatrix.length;
-    const visited: boolean[] = Array(n).fill(false);
-    let connectedComponents = 0; // Track the number of connected components found
-  
-    for (let node = 0; node < n; node++) {
-      if (!visited[node]) {
-        connectedComponents++; // Start of a new connected component
-        const queue: number[] = [];
-        queue.push(node);
-        visited[node] = true;
-  
-        while (queue.length > 0) {
-          const currentNode = queue.shift()!;
-  
-          for (let neighbor = 0; neighbor < n; neighbor++) {
-            if (adjacencyMatrix[currentNode][neighbor] === 1 && !visited[neighbor]) {
-              queue.push(neighbor);
-              visited[neighbor] = true;
-            }
-          }
-        }
-      }
-    }
-  
-    // Check if all nodes are reachable from at least one starting point
-    return connectedComponents === n;
-  }
 }
