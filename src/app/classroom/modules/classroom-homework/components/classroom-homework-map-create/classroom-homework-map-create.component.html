@@ -2,8 +2,14 @@
     <div class="card-body h-100">
 
       <div class="row px-2 mb-3">
-        <div class="col-10">
-
+        <div class="col-6">
+          <h4 class="h4">Status: Not valid because it contains a cycle</h4>
+        </div>
+        <div class="col-2 align-items-right">
+          <button class="btn btn-danger d-grid w-100">Enable Delete Mode</button>
+        </div>
+        <div class="col-2 align-items-right">
+          <button class="btn btn-warning d-grid w-100">Enable Edit Mode</button>
         </div>
         <div class="col-2 align-items-right">
           <button class="btn btn-success d-grid w-100" (click)="submitHomework()" [disabled]="!isValidGraph">Submit</button>
@@ -35,32 +41,34 @@
                 </div>
               </form>
 
-              <div class="my-3">
-                <label for="source_node" class="form-label">Source Node:</label>
-                <ng-select id="source_node" name="source_node" [items]="nodes" 
-                          bindLabel="label" 
-                          bindValue="id" 
-                          [(ngModel)]="sourceLinkNodeId">
-                </ng-select>
-              </div>
+              <form (ngSubmit)="linkNodes()">
+                <div class="my-3">
+                  <label for="source_node" class="form-label">Source Node:</label>
+                  <ng-select id="source_node" name="source_node" [items]="nodes" 
+                            bindLabel="label" 
+                            bindValue="id" 
+                            [(ngModel)]="sourceLinkNodeId">
+                  </ng-select>
+                </div>
 
-              <div class="mb-3">
-                <label for="target_node" class="form-label">Target Node:</label>
-                <ng-select id="target_node" name="target_node" [items]="nodes" 
-                          bindLabel="label" 
-                          bindValue="id" 
-                          [(ngModel)]="targetLinkNodeId">
-                </ng-select>
-              </div>
+                <div class="mb-3">
+                  <label for="target_node" class="form-label">Target Node:</label>
+                  <ng-select id="target_node" name="target_node" [items]="nodes" 
+                            bindLabel="label" 
+                            bindValue="id" 
+                            [(ngModel)]="targetLinkNodeId">
+                  </ng-select>
+                </div>
 
-              <div class="mb-3">
-                <label for="link_label" class="form-label">Label:</label>
-                <input type="text" class="form-control" id="link_label" name="link_label" [(ngModel)]="labelLink">
-              </div>
+                <div class="mb-3">
+                  <label for="link_label" class="form-label">Label:</label>
+                  <input type="text" class="form-control" id="link_label" name="link_label" [(ngModel)]="labelLink">
+                </div>
 
-              <div class="text-center">
-                <button class="btn btn-primary d-grid w-100" (click)="linkNodes()" [disabled]="!sourceLinkNodeId || !targetLinkNodeId || !labelLink">Link</button>
-              </div>
+                <div class="text-center">
+                  <button class="btn btn-primary d-grid w-100" type="submit" [disabled]="!sourceLinkNodeId || !targetLinkNodeId || !labelLink">Link</button>
+                </div>
+              </form>
             </div>
           </div>
 
