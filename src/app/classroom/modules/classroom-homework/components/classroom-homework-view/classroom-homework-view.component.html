@@ -23,8 +23,8 @@
               <strong>Title:</strong> {{homework.title}} <br>
               <strong>Description:</strong> {{homework.body}}
             </div>
-            <div class="col-3 d-flex align-items-center">
-              <button class="btn btn-success d-grid w-100">Create Map</button>
+            <div class="col-3 d-flex align-items-center" *ngIf="user.role == 1">
+              <button class="btn btn-success d-grid w-100" (click)="toggleMapCreation()">{{getMapCreationButtonLabel()}}</button>
             </div>
           </div>
         </div>
@@ -32,8 +32,9 @@
     </div>
   </div>
 
-  <app-classroom-homework-map-create></app-classroom-homework-map-create>
+  <app-classroom-homework-map-create *ngIf="user.role == 0 || (user.role == 1 && hasEnabledMapCreation)"></app-classroom-homework-map-create>
+
+  <app-classroom-homework-teacher-view *ngIf="user.role == 1"></app-classroom-homework-teacher-view>
 
 </div>
 
-<app-classroom-homework-teacher-view *ngIf="user.role == 1"></app-classroom-homework-teacher-view>

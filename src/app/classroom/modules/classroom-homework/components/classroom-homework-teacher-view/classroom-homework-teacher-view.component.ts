@@ -46,11 +46,10 @@ export class ClassroomHomeworkTeacherViewComponent {
   public user!: User;
   public classroom_id!: string;
   public homework_id!: string;
-  public homework!: ClassroomHomework;
 
   public loading: boolean;
 
-  public simulationFilterForm = new FormGroup({
+  public homeworkFilterForm = new FormGroup({
     'node_min': new FormControl(0, Validators.required),
     'node_max': new FormControl(0, Validators.required),
     'edge_min': new FormControl(0, Validators.required),
@@ -60,9 +59,17 @@ export class ClassroomHomeworkTeacherViewComponent {
   }, fieldsRangeValidator);
 
   public current_chart_type: CHART_TYPE;
-  public simulation: ClassroomHomework | null;
+  public homework: ClassroomHomework | null;
 
   public maxMapsValues: {
+    nodes: number;
+    edges: number;
+    entropy: number;
+    entropy_percent: number;
+    effort: number;
+  }
+
+  public minMapsValues: {
     nodes: number;
     edges: number;
     entropy: number;
@@ -77,7 +84,7 @@ export class ClassroomHomeworkTeacherViewComponent {
     private _router: Router, private _alertService: AlertService, private _modalService: BsModalService) {
     this.loading = false;
 
-    this.simulation = null;
+    this.homework = null;
     this.currentMap = null;
     this.current_chart_type = CHART_TYPE.Entropy;
 
@@ -87,6 +94,14 @@ export class ClassroomHomeworkTeacherViewComponent {
       entropy: 0,
       entropy_percent: 0,
       effort: 0
+    };
+
+    this.minMapsValues = {
+      nodes: 999999999,
+      edges: 999999999,
+      entropy: 999999999,
+      entropy_percent: 999999999,
+      effort: 999999999
     };
 
     let currentUserData = JSON.parse(localStorage.getItem('currentUserData')!);
@@ -113,62 +128,10 @@ export class ClassroomHomeworkTeacherViewComponent {
         return;
       }
       this.homework = <ClassroomHomework>response;
-
       let tmpMaps: ClassroomHomeworkMap[] = [];
-      
-      for(let map of this.homework.maps!) {
-        tmpMaps = [
-          ...tmpMaps, {
-            _id: map._id,
-            color_entropy: 0,
-            color_entropy_percent: 0,
-            color_effort: 0,
-            edges_count: map.edges_count,
-            entropy: map.entropy!,
-            entropy_percent: map.entropy_percent!,
-            effort: map.effort!,
-            nodes_count: map.nodes_count,
-            homework_id: map.homework_id,
-            adjacency_matrix: map.adjacency_matrix,
-            created_at: 0,
-            nodes_labels: map.nodes_labels,
-            adjacency_matrix_labels: map.adjacency_matrix_labels
-          }
-        ]
-      }
-      
-      this.simulation = {
-        classroom_id: this.homework.classroom_id,
-        title: this.homework.title,
-        node_min: this.homework.node_min,
-        node_max: this.homework.node_max,
-        maps: tmpMaps,
-        body: this.homework.body,
-        start_datetime: this.homework.start_datetime,
-        expire_datetime: this.homework.expire_datetime
-      };
 
-      if(this.simulation?.maps) {
-
-        this.simulationFilterForm.get('node_min')!.setValidators([Validators.min(this.simulation.node_min), Validators.required]);
-        this.simulationFilterForm.patchValue({
-          node_min: this.simulation.node_min
-        })
-        this.simulationFilterForm.get('node_min')!.updateValueAndValidity();
-
-        this.simulationFilterForm.get('edge_min')!.setValidators([Validators.min(this.simulation.node_min), Validators.required]);
-        this.simulationFilterForm.patchValue({
-          edge_min: this.simulation.node_min - 1
-        })
-        this.simulationFilterForm.get('edge_min')!.updateValueAndValidity();
-
-        this.simulationFilterForm.get('node_max')!.setValidators([Validators.max(this.simulation.node_max), Validators.required]);
-        this.simulationFilterForm.patchValue({
-          node_max: this.simulation.node_max
-        })
-        this.simulationFilterForm.get('node_max')!.updateValueAndValidity();
-
-        for(let map of this.simulation.maps) {
+      if(this.homework.maps) {    
+        for(let map of this.homework.maps) {
           if(map.nodes_count > this.maxMapsValues.nodes)
             this.maxMapsValues.nodes = map.nodes_count;
 
@@ -183,10 +146,98 @@ export class ClassroomHomeworkTeacherViewComponent {
 
           if(map.effort && map.effort > this.maxMapsValues.effort)
             this.maxMapsValues.effort = map.effort;
+
+          if(map.nodes_count < this.minMapsValues.nodes)
+            this.minMapsValues.nodes = map.nodes_count;
+
+          if(map.edges_count < this.minMapsValues.edges)
+            this.minMapsValues.edges = map.edges_count;
+
+          if(map.entropy && map.entropy < this.minMapsValues.entropy)
+            this.minMapsValues.entropy = map.entropy;
+
+          if(map.entropy_percent && map.entropy_percent < this.minMapsValues.entropy_percent)
+            this.minMapsValues.entropy_percent = map.entropy_percent;
+
+          if(map.effort && map.effort < this.minMapsValues.effort)
+            this.minMapsValues.effort = map.effort;
         }
         this.resetFilterForm(this.current_chart_type);
-        this.renderScatterPlot(this.current_chart_type);
+      } 
+
+      let split_entropy = (this.maxMapsValues.entropy - this.minMapsValues.entropy) / 3
+      let first_part_entropy = this.minMapsValues.entropy + split_entropy;
+      let second_part_entropy = first_part_entropy + split_entropy;
+
+      let split_entropy_percent = (this.maxMapsValues.entropy_percent - this.minMapsValues.entropy_percent) / 3
+      let first_part_entropy_percent = this.minMapsValues.entropy_percent + split_entropy_percent;
+      let second_part_entropy_percent = first_part_entropy_percent + split_entropy_percent;
+    
+      let split_effort = (this.maxMapsValues.effort - this.minMapsValues.effort) / 3
+      let first_part_effort = this.minMapsValues.effort + split_effort;
+      let second_part_effort = first_part_effort + split_effort;
+
+      for(let map of this.homework.maps!) {
+        let color_entropy = 0
+        let color_entropy_percent = 0
+        let color_effort = 0
+
+        if(map.is_teacher_map) {
+          color_entropy = 3;
+          color_entropy_percent = 3;
+          color_effort = 3;
+        } else {
+          if(map.entropy! > first_part_entropy && map.entropy! < second_part_entropy)
+            color_entropy = 1
+          else if(map.entropy! >= second_part_entropy)
+            color_entropy = 2
+      
+          if(map.entropy_percent! > first_part_entropy_percent && map.entropy_percent! < second_part_entropy_percent)
+            color_entropy_percent = 1
+          else if(map.entropy_percent! >= second_part_entropy_percent)
+            color_entropy_percent = 2
+      
+          if(map.effort! > first_part_effort && map.effort! < second_part_effort)
+            color_effort = 1
+          else if(map.effort! >= second_part_effort)
+            color_effort = 2
+        }
+
+        tmpMaps = [
+          ...tmpMaps, {
+            _id: map._id,
+            color_entropy: color_entropy,
+            color_entropy_percent: color_entropy_percent,
+            color_effort: color_effort,
+            edges_count: map.edges_count,
+            entropy: map.entropy!,
+            entropy_percent: map.entropy_percent!,
+            effort: map.effort!,
+            nodes_count: map.nodes_count,
+            homework_id: map.homework_id,
+            adjacency_matrix: map.adjacency_matrix,
+            created_at: map.created_at,
+            nodes_labels: map.nodes_labels,
+            adjacency_matrix_labels: map.adjacency_matrix_labels,
+            author_name: map.author_name,
+            is_teacher_map: map.is_teacher_map
+          }
+        ]
       }
+      
+      this.homework = {
+        classroom_id: this.homework.classroom_id,
+        title: this.homework.title,
+        node_min: this.homework.node_min,
+        node_max: this.homework.node_max,
+        maps: tmpMaps,
+        body: this.homework.body,
+        start_datetime: this.homework.start_datetime,
+        expire_datetime: this.homework.expire_datetime
+      };
+      this.renderScatterPlot(this.current_chart_type);
+
+      
     })
   }
 
@@ -196,145 +247,155 @@ export class ClassroomHomeworkTeacherViewComponent {
   
 
   public resetFilterForm(chart_type: CHART_TYPE) {
-    this.simulationFilterForm.get('node_min')!.setValidators([Validators.min(this.simulation!.node_min), Validators.required]);
-    this.simulationFilterForm.patchValue({
-      node_min: this.simulation!.node_min
+    this.homeworkFilterForm.get('node_min')!.setValidators([Validators.min(this.minMapsValues.nodes), Validators.required]);
+    this.homeworkFilterForm.patchValue({
+      node_min: this.minMapsValues.nodes
     })
-    this.simulationFilterForm.get('node_min')!.updateValueAndValidity();
+    this.homeworkFilterForm.get('node_min')!.updateValueAndValidity();
 
-    this.simulationFilterForm.get('edge_min')!.setValidators([Validators.min(this.simulation!.node_min), Validators.required]);
-    this.simulationFilterForm.patchValue({
-      edge_min: this.simulation!.node_min - 1
+    this.homeworkFilterForm.get('edge_min')!.setValidators([Validators.min(this.minMapsValues.edges), Validators.required]);
+    this.homeworkFilterForm.patchValue({
+      edge_min: this.minMapsValues.edges
     })
-    this.simulationFilterForm.get('edge_min')!.updateValueAndValidity();
+    this.homeworkFilterForm.get('edge_min')!.updateValueAndValidity();
 
     if(chart_type == CHART_TYPE.Entropy) {
-      this.simulationFilterForm.get('param_min')!.setValidators([Validators.min(0), Validators.required]);
-      this.simulationFilterForm.patchValue({
-        param_min: 0
+      this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.entropy), Validators.required]);
+      this.homeworkFilterForm.patchValue({
+        param_min: this.minMapsValues.entropy
       })
-      this.simulationFilterForm.get('param_min')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
-      this.simulationFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy), Validators.required]);
-      this.simulationFilterForm.patchValue({
+      this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy), Validators.required]);
+      this.homeworkFilterForm.patchValue({
         param_max: this.maxMapsValues.entropy
       })
-      this.simulationFilterForm.get('param_max')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
 
     else if(chart_type == CHART_TYPE.EntropyPercent) {
-      this.simulationFilterForm.get('param_min')!.setValidators([Validators.min(0), Validators.required]);
-      this.simulationFilterForm.patchValue({
-        param_min: 0
+      this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.entropy_percent), Validators.required]);
+      this.homeworkFilterForm.patchValue({
+        param_min: this.minMapsValues.entropy_percent
       })
-      this.simulationFilterForm.get('param_min')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
-      this.simulationFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy_percent), Validators.required]);
-      this.simulationFilterForm.patchValue({
+      this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy_percent), Validators.required]);
+      this.homeworkFilterForm.patchValue({
         param_max: this.maxMapsValues.entropy_percent
       })
-      this.simulationFilterForm.get('param_max')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
 
     else if(chart_type == CHART_TYPE.Effort) {
-      this.simulationFilterForm.get('param_min')!.setValidators([Validators.min(0), Validators.required]);
-      this.simulationFilterForm.patchValue({
-        param_min: 0
+      this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.effort), Validators.required]);
+      this.homeworkFilterForm.patchValue({
+        param_min: this.minMapsValues.effort
       })
-      this.simulationFilterForm.get('param_min')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
-      this.simulationFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.effort), Validators.required]);
-      this.simulationFilterForm.patchValue({
+      this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.effort), Validators.required]);
+      this.homeworkFilterForm.patchValue({
         param_max: this.maxMapsValues.effort
       })
-      this.simulationFilterForm.get('param_max')!.updateValueAndValidity();
+      this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
 
-    this.simulationFilterForm.get('node_max')!.setValidators([Validators.max(this.simulation!.node_max), Validators.required]);
-    this.simulationFilterForm.patchValue({
-      node_max: this.simulation!.node_max
+    this.homeworkFilterForm.get('node_max')!.setValidators([Validators.max(this.maxMapsValues.nodes), Validators.required]);
+    this.homeworkFilterForm.patchValue({
+      node_max: this.maxMapsValues.nodes
     })
-    this.simulationFilterForm.get('node_max')!.updateValueAndValidity();
+    this.homeworkFilterForm.get('node_max')!.updateValueAndValidity();
 
-    this.simulationFilterForm.get('edge_max')!.setValidators([Validators.max(this.maxMapsValues.edges), Validators.required]);
-    this.simulationFilterForm.patchValue({
+    this.homeworkFilterForm.get('edge_max')!.setValidators([Validators.max(this.maxMapsValues.edges), Validators.required]);
+    this.homeworkFilterForm.patchValue({
       edge_max: this.maxMapsValues.edges
     })
-    this.simulationFilterForm.get('edge_max')!.updateValueAndValidity();
+    this.homeworkFilterForm.get('edge_max')!.updateValueAndValidity();
   }
 
   
   public getCoordsDatum(chart_type: CHART_TYPE, trace: number) {
-    let x = this.unpack(this.simulation!.maps!.filter(map => 
+    let x = this.unpack(this.homework!.maps!.filter(map => 
       map.color_entropy == trace && 
-      map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-      map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.simulationFilterForm.value.param_min! && map.entropy <= this.simulationFilterForm.value.param_max!
+      map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+      map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
     ), 'nodes_count');
 
-    let y = this.unpack(this.simulation!.maps!.filter(map => 
+    let y = this.unpack(this.homework!.maps!.filter(map => 
       map.color_entropy == trace && 
-      map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-      map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.simulationFilterForm.value.param_min! && map.entropy <= this.simulationFilterForm.value.param_max!
+      map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+      map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
     ), 'edges_count');
 
-    let z = this.unpack(this.simulation!.maps!.filter(map => 
+    let z = this.unpack(this.homework!.maps!.filter(map => 
       map.color_entropy == trace && 
-      map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-      map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.simulationFilterForm.value.param_min! && map.entropy <= this.simulationFilterForm.value.param_max!
+      map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+      map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
     ), 'entropy');
 
     if(chart_type == CHART_TYPE.EntropyPercent) {
-      x = this.unpack(this.simulation!.maps!.filter(map => 
+      x = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.simulationFilterForm.value.param_min! && map.entropy_percent <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
       ), 'nodes_count');
 
-      y = this.unpack(this.simulation!.maps!.filter(map => 
+      y = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.simulationFilterForm.value.param_min! && map.entropy_percent <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
       ), 'edges_count');
 
-      z = this.unpack(this.simulation!.maps!.filter(map => 
+      z = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.simulationFilterForm.value.param_min! && map.entropy_percent <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
       ), 'entropy_percent');
     }
     else if(chart_type == CHART_TYPE.Effort) {
-      x = this.unpack(this.simulation!.maps!.filter(map => 
+      x = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.simulationFilterForm.value.param_min! && map.effort <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
       ), 'nodes_count');
-      y = this.unpack(this.simulation!.maps!.filter(map => 
+      y = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.simulationFilterForm.value.param_min! && map.effort <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
       ), 'edges_count');
-      z = this.unpack(this.simulation!.maps!.filter(map => 
+      z = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
-        map.nodes_count >= this.simulationFilterForm.value.node_min! && map.nodes_count <= this.simulationFilterForm.value.node_max! &&
-        map.edges_count >= this.simulationFilterForm.value.edge_min! && map.edges_count <= this.simulationFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.simulationFilterForm.value.param_min! && map.effort <= this.simulationFilterForm.value.param_max!
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
       ), 'effort');
     }
-    return [x, y, z]
+    return [x, y, z, this.homework!.maps!.map(map => "Created at " + this.dateTransform(map.created_at!) + " by " + map.author_name)]
+  }
+
+  public dateTransform(timestamp: number): string {
+    const date = new Date(timestamp * 1000);
+
+    return date.toLocaleDateString("en-GB", { // you can use undefined as first argument
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }) + " - " + String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0');
   }
 
   public renderScatterPlot(chart_type: CHART_TYPE): void {
     Plotly.purge('container');
 
-    const colors = ['rgba(168, 50, 50, 0.95)', 'rgba(161, 158, 157, 0.95)', 'rgba(86, 199, 30, 0.95)'];
+    const colors = ['rgba(168, 50, 50, 0.95)', 'rgba(161, 158, 157, 0.95)', 'rgba(86, 199, 30, 0.95)', 'rgba(51, 102, 255, 0.95)'];
 
     let firstTrace: Partial<Plotly.PlotData> = {
       x: this.getCoordsDatum(chart_type, 0)[0],
@@ -349,7 +410,8 @@ export class ClassroomHomeworkTeacherViewComponent {
         },
         opacity: 0.8
       },
-      type: 'scatter3d'
+      type: 'scatter3d',
+      text: this.getCoordsDatum(chart_type, 0)[3],
     };
 
     let secondTrace: Partial<Plotly.PlotData> = {
@@ -384,7 +446,24 @@ export class ClassroomHomeworkTeacherViewComponent {
       type: 'scatter3d'
     };
 
-    let traces: Plotly.Data[] = [firstTrace, secondTrace, thirdTrace];
+    let teacherTrace: Partial<Plotly.PlotData> = {
+      x: this.getCoordsDatum(chart_type, 3)[0],
+      y: this.getCoordsDatum(chart_type, 3)[1],
+      z: this.getCoordsDatum(chart_type, 3)[2],
+      mode: 'markers',
+      marker: {
+        size: 5,
+        line: {
+          color: colors[3],
+          width: 0.5
+        },
+        opacity: 0.8
+      },
+      name: 'teacher maps',
+      type: 'scatter3d'
+    };
+
+    let traces: Plotly.Data[] = [firstTrace, secondTrace, thirdTrace, teacherTrace];
 
     let layout: Partial<Plotly.Layout> = {
       margin: {
@@ -417,15 +496,15 @@ export class ClassroomHomeworkTeacherViewComponent {
 
     myPlot.on('plotly_click', (data: any) => {
       if(this.current_chart_type == CHART_TYPE.Entropy)
-        this.currentMap = this.simulation?.maps?.filter(map => data.points[0].x == map.nodes_count &&
+        this.currentMap = this.homework?.maps?.filter(map => data.points[0].x == map.nodes_count &&
           data.points[0].y == map.edges_count && 
           data.points[0].z == map.entropy)[0]!;
       else if(this.current_chart_type == CHART_TYPE.EntropyPercent)
-        this.currentMap = this.simulation?.maps?.filter(map => data.points[0].x == map.nodes_count &&
+        this.currentMap = this.homework?.maps?.filter(map => data.points[0].x == map.nodes_count &&
           data.points[0].y == map.edges_count && 
           data.points[0].z == map.entropy_percent)[0]!;
       else if(this.current_chart_type == CHART_TYPE.Effort)
-          this.currentMap = this.simulation?.maps?.filter(map => data.points[0].x == map.nodes_count &&
+          this.currentMap = this.homework?.maps?.filter(map => data.points[0].x == map.nodes_count &&
             data.points[0].y == map.edges_count && 
             data.points[0].z == map.effort)[0]!;
 
@@ -456,10 +535,10 @@ export class ClassroomHomeworkTeacherViewComponent {
   }
 
   public downloadJson(){
-    var sJson = JSON.stringify(this.simulation);
+    var sJson = JSON.stringify(this.homework);
     var element = document.createElement('a');
     element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
-    element.setAttribute('download', (this.simulation?.title) ? this.simulation?.title + '.json' : 'undefined.json');
+    element.setAttribute('download', (this.homework?.title) ? this.homework?.title + '.json' : 'undefined.json');
     element.style.display = 'none';
     document.body.appendChild(element);
     element.click(); // simulate click

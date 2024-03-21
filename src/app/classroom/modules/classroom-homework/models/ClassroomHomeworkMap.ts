@@ -15,4 +15,6 @@ export interface ClassroomHomeworkMap {
   color_entropy?: number,
   color_entropy_percent?: number,
   color_effort?: number,
+  is_teacher_map?: boolean,
+  author_name?: string
 }

@@ -24,9 +24,14 @@ export class ClassroomHomeworkViewComponent {
   public homework!: ClassroomHomework;
   public loading: boolean;
 
+  private _hasEnabledMapCreation: boolean;
+  private _mapCreationButtonLabel: string;
+
   constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router) {
 
     this.loading = false;
+    this._hasEnabledMapCreation = false;
+    this._mapCreationButtonLabel = "Create Map";
 
     let currentUserData = JSON.parse(localStorage.getItem('currentUserData')!);
 
@@ -53,5 +58,19 @@ export class ClassroomHomeworkViewComponent {
 
       this.loading = false;
     });
+  }
+
+  public toggleMapCreation(): void {
+    this._hasEnabledMapCreation = !this._hasEnabledMapCreation;
+    this._mapCreationButtonLabel = this._hasEnabledMapCreation ? "Hide Map Creation" : "Create Map";
+
+  }
+
+  public getMapCreationButtonLabel(): string {
+    return this._mapCreationButtonLabel;
+  }
+
+  get hasEnabledMapCreation(): boolean {
+    return this._hasEnabledMapCreation;
   }
 }

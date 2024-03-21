@@ -173,9 +173,8 @@ export class SimulationViewComponent {
         }
         
         this.simulation = <Simulation>response;
-
         if(this.simulation.maps) {
-
+          
           this.simulationFilterForm.get('node_min')!.setValidators([Validators.min(this.simulation.node_min), Validators.required]);
           this.simulationFilterForm.patchValue({
             node_min: this.simulation.node_min
@@ -304,6 +303,8 @@ export class SimulationViewComponent {
       },
       type: 'scatter3d'
     };
+
+    console.log(firstTrace)
 
     let secondTrace: Partial<Plotly.PlotData> = {
       x: this.getCoordsDatum(chart_type, 1)[0],
