@@ -220,7 +220,8 @@ export class ClassroomHomeworkTeacherViewComponent {
             nodes_labels: map.nodes_labels,
             adjacency_matrix_labels: map.adjacency_matrix_labels,
             author_name: map.author_name,
-            is_teacher_map: map.is_teacher_map
+            is_teacher_map: map.is_teacher_map,
+            map_name: map.map_name
           }
         ]
       }
@@ -262,13 +263,13 @@ export class ClassroomHomeworkTeacherViewComponent {
     if(chart_type == CHART_TYPE.Entropy) {
       this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.entropy), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_min: this.minMapsValues.entropy
+        param_min: parseFloat(this.minMapsValues.entropy.toFixed(2))
       })
       this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
       this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_max: this.maxMapsValues.entropy
+        param_max: parseFloat(this.maxMapsValues.entropy.toFixed(2))
       })
       this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
@@ -276,13 +277,13 @@ export class ClassroomHomeworkTeacherViewComponent {
     else if(chart_type == CHART_TYPE.EntropyPercent) {
       this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.entropy_percent), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_min: this.minMapsValues.entropy_percent
+        param_min: parseFloat(this.minMapsValues.entropy_percent.toFixed(2))
       })
       this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
       this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.entropy_percent), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_max: this.maxMapsValues.entropy_percent
+        param_max: parseFloat(this.maxMapsValues.entropy_percent.toFixed(2))
       })
       this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
@@ -290,13 +291,13 @@ export class ClassroomHomeworkTeacherViewComponent {
     else if(chart_type == CHART_TYPE.Effort) {
       this.homeworkFilterForm.get('param_min')!.setValidators([Validators.min(this.minMapsValues.effort), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_min: this.minMapsValues.effort
+        param_min: parseFloat(this.minMapsValues.effort.toFixed(2))
       })
       this.homeworkFilterForm.get('param_min')!.updateValueAndValidity();
 
       this.homeworkFilterForm.get('param_max')!.setValidators([Validators.max(this.maxMapsValues.effort), Validators.required]);
       this.homeworkFilterForm.patchValue({
-        param_max: this.maxMapsValues.effort
+        param_max: parseFloat(this.maxMapsValues.effort.toFixed(2))
       })
       this.homeworkFilterForm.get('param_max')!.updateValueAndValidity();
     }
@@ -379,7 +380,14 @@ export class ClassroomHomeworkTeacherViewComponent {
         map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
       ), 'effort');
     }
-    return [x, y, z, this.homework!.maps!.map(map => "Created at " + this.dateTransform(map.created_at!) + " by " + map.author_name)]
+    return [x, y, z, this.homework!.maps!.map(map => 
+      "<b>Nodes Count:</b> " + map.nodes_count +
+      "<br><b>Edges Count:</b> " + map.edges_count +
+      "<br><b>" + this.getChartTypeLabel(this.current_chart_type) + ":</b> " + this.getChartTypeValue(map, this.current_chart_type) +
+      "<br><br><b>Map Name:</b> " + map.map_name + 
+      "<br><b>Author:</b> " + map.author_name + 
+      "<br><b>Created At:</b> " + this.dateTransform(map.created_at!)
+    )]
   }
 
   public dateTransform(timestamp: number): string {
@@ -412,6 +420,7 @@ export class ClassroomHomeworkTeacherViewComponent {
       },
       type: 'scatter3d',
       text: this.getCoordsDatum(chart_type, 0)[3],
+      hoverinfo: 'text', 
     };
 
     let secondTrace: Partial<Plotly.PlotData> = {
@@ -427,7 +436,9 @@ export class ClassroomHomeworkTeacherViewComponent {
         },
         opacity: 0.8
       },
-      type: 'scatter3d'
+      type: 'scatter3d',
+      text: this.getCoordsDatum(chart_type, 0)[3],
+      hoverinfo: 'text', 
     };
 
     let thirdTrace: Partial<Plotly.PlotData> = {
@@ -443,7 +454,9 @@ export class ClassroomHomeworkTeacherViewComponent {
         },
         opacity: 0.8
       },
-      type: 'scatter3d'
+      type: 'scatter3d',
+      text: this.getCoordsDatum(chart_type, 0)[3],
+      hoverinfo: 'text', 
     };
 
     let teacherTrace: Partial<Plotly.PlotData> = {
@@ -460,7 +473,9 @@ export class ClassroomHomeworkTeacherViewComponent {
         opacity: 0.8
       },
       name: 'teacher maps',
-      type: 'scatter3d'
+      type: 'scatter3d',
+      text: this.getCoordsDatum(chart_type, 0)[3],
+      hoverinfo: 'text', 
     };
 
     let traces: Plotly.Data[] = [firstTrace, secondTrace, thirdTrace, teacherTrace];
@@ -517,6 +532,14 @@ export class ClassroomHomeworkTeacherViewComponent {
       case CHART_TYPE.Entropy: return 'Entropy (H)';
       case CHART_TYPE.EntropyPercent: return 'Entropy Percent (Hr)';
       case CHART_TYPE.Effort: return 'Effort (M)'
+    }
+  }
+
+  public getChartTypeValue(map: ClassroomHomeworkMap, chart_type: CHART_TYPE): string {
+    switch(chart_type) {
+      case CHART_TYPE.Entropy: return map.entropy!.toFixed(2);
+      case CHART_TYPE.EntropyPercent: return map.entropy_percent!.toFixed(2);
+      case CHART_TYPE.Effort: return map.effort!.toFixed(2);
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef } from '@angular/core';
 import { User } from 'src/app/user/models/User';
 import { ClassroomHomework } from '../../models/ClassroomHomework';
 import { ClassroomHomeworkMap } from '../../models/ClassroomHomeworkMap';
@@ -7,6 +7,7 @@ import { ClassroomHomeworkService } from '../../services/classroom-homework.serv
 import { DagreSettings, Edge, Orientation, Node } from '@swimlane/ngx-graph';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertService } from 'src/app/shared/alert/alert.service';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-classroom-homework-map-create',
@@ -42,9 +43,16 @@ export class ClassroomHomeworkMapCreateComponent {
     'name': new FormControl(null, Validators.required),
   });
 
+  public homeworkCreateForm = new FormGroup({
+    'name': new FormControl(null, Validators.required),
+  });
+
   public adjacencyMatrix!: number[][];
 
-  constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router, private _alertService: AlertService) {
+  private _modalRef?: BsModalRef;
+
+  constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router, 
+    private _alertService: AlertService, private _modalService: BsModalService) {
     this.loading = false;
     this.nodesCount = 0;
     this.linksCount = 0;
@@ -138,6 +146,14 @@ export class ClassroomHomeworkMapCreateComponent {
     this.isValidGraph = this.checkDAG();
   }
 
+  public hideSubmitHomeworkModal() {
+    this._modalRef?.hide();
+  }
+
+  public askHomeworkName(template: TemplateRef<void>) {
+    this._modalRef = this._modalService.show(template);
+  }
+
   public submitHomework() {
     let nodes_labels: string[] = [];
     let links_labels: string[][] = Array.from(Array(this.nodes.length), _ => Array(this.nodes.length).fill(''));
@@ -158,7 +174,8 @@ export class ClassroomHomeworkMapCreateComponent {
       edges_count: this.links.length,
       nodes_labels: nodes_labels,
       adjacency_matrix: this.adjacencyMatrix,
-      adjacency_matrix_labels: links_labels
+      adjacency_matrix_labels: links_labels,
+      map_name: (this.homeworkCreateForm.value.name) ? this.homeworkCreateForm.value.name : ''
     };
     this._classroomHomeworkService.createClassroomHomeworkMap(this.classroom_id, this.homework_id, homework_map).subscribe(response => {
       if(!response.hasOwnProperty('error')) {
@@ -166,7 +183,6 @@ export class ClassroomHomeworkMapCreateComponent {
         this._alertService.success("Homework submitted.");
       }
     });
-
   }
 
   isValidConceptualMap(adjacencyMatrix: number[][]): boolean {
