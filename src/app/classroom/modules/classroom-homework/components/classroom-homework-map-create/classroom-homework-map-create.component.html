@@ -3,7 +3,8 @@
 
     <div class="row px-2 mb-3">
       <div class="col-6">
-        <h4 class="h4">Status: Not valid because it contains a cycle</h4>
+        <h4 class="h4" *ngIf="!isValidGraph">Status: Not valid to Submit</h4>
+        <h4 class="h4" *ngIf="isValidGraph">Status: Valid to Submit</h4>
       </div>
       <div class="col-2 align-items-right">
         <button class="btn btn-danger d-grid w-100">Enable Delete Mode</button>
