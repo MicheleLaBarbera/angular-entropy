@@ -68,4 +68,43 @@ export class ClassroomHomeworkListComponent {
       });
     }
   }
+
+  public downloadJson(){
+    let homeworks = this.homeworks.map((homework: ClassroomHomework) => {
+      const startDate = new Date(homework.start_datetime! * 1000);
+      const expireDate = new Date(homework.expire_datetime! * 1000);
+      const createdDate = new Date(homework.created_at! * 1000);
+
+      return {
+        title: homework.title,
+        body: homework.body,
+        node_min: homework.node_min,
+        node_max: homework.node_max,
+        start_datetime: startDate.toLocaleDateString("en-GB", { 
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }) + " - " + String(startDate.getHours()).padStart(2, '0') + ":" + String(startDate.getMinutes()).padStart(2, '0'),
+        expire_datetime: expireDate.toLocaleDateString("en-GB", { 
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }) + " - " + String(expireDate.getHours()).padStart(2, '0') + ":" + String(expireDate.getMinutes()).padStart(2, '0'),
+        created_at: createdDate.toLocaleDateString("en-GB", { 
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }) + " - " + String(createdDate.getHours()).padStart(2, '0') + ":" + String(createdDate.getMinutes()).padStart(2, '0'),
+      }
+    });
+
+    let sJson = JSON.stringify(homeworks);
+    let element = document.createElement('a');
+    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+    element.setAttribute('download', 'exported_homeworks_' + Date.now() + '.json');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click(); 
+    document.body.removeChild(element);
+  }
 }

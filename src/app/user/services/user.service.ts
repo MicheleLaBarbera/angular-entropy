@@ -31,11 +31,10 @@ export class UserService {
     ) as Observable<ClassroomHomework[] | ServerError>;
   }
 
-  public authUser(username: string, password: string, remember_me: number): Observable<any>{
+  public authUser(username: string, password: string): Observable<any>{
     let authObject = {
       username: username, 
-      password: password, 
-      remember_me: remember_me
+      password: password
     }
     return this._http.post<any>(this._userEndpointUrl + 'token', authObject)
     .pipe(

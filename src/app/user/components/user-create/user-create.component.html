@@ -44,22 +44,22 @@
             <div class="row mb-3">
               <div class="col-6">
                 <label for="firstname" class="form-label">Firstname</label>
-                <input type="text" class="form-control" id="firstname" name="user_firstname" placeholder="Enter your firstname" formControlName="firstname">
+                <input type="text" class="form-control" id="firstname" name="user_firstname" placeholder="Type your firstname" formControlName="firstname">
               </div>
               <div class="col-6">
                 <label for="lastname" class="form-label">Lastname</label>
-                <input type="text" class="form-control" id="lastname" name="user_lastname" placeholder="Enter your lastname" formControlName="lastname">
+                <input type="text" class="form-control" id="lastname" name="user_lastname" placeholder="Type your lastname" formControlName="lastname">
               </div>
             </div>
 
             <div class="mb-3">
               <label for="name" class="form-label">Username</label>
-              <input type="text" class="form-control" id="name" name="user_name" placeholder="Enter a unique username" formControlName="username">
+              <input type="text" class="form-control" id="name" name="user_name" placeholder="Type a unique username" formControlName="username">
             </div>
 
             <div class="mb-3">
               <label for="email" class="form-label">E-Mail</label>
-              <input type="text" class="form-control" id="email" name="user_email" placeholder="Enter your email address" formControlName="email">
+              <input type="text" class="form-control" id="email" name="user_email" placeholder="Type your email address" formControlName="email">
             </div>
 
             <div class="mb-3">
@@ -74,12 +74,12 @@
                 <label class="form-label">Role</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                <label class="form-check-label" for="inlineRadio1">Student</label>
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="student_role" value="0" formControlName="role" checked>
+                <label class="form-check-label" for="student_role">Student</label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                <label class="form-check-label" for="inlineRadio2">Teacher</label>
+                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="teacher_role" value="1" formControlName="role">
+                <label class="form-check-label" for="teacher_role">Teacher</label>
               </div>
             </div>
 

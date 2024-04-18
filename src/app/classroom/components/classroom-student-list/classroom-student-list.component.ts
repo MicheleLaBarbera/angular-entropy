@@ -45,4 +45,23 @@ export class ClassroomStudentListComponent {
       this.loading = false;
     });
   }
+
+  public downloadJson(){
+    let students = this.students.map((user: User) => {
+      return {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+      }
+    });
+
+    let sJson = JSON.stringify(students);
+    let element = document.createElement('a');
+    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+    element.setAttribute('download', 'exported_students_' + Date.now() + '.json');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click(); 
+    document.body.removeChild(element);
+  }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Host } from '@angular/core';
 import { CLASSROOM_ACTION, Classroom } from '../../models/Classroom';
 import { ClassroomService } from '../../services/classroom.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -76,6 +76,33 @@ export class ClassroomListComponent {
         textarea.remove();
       }
     }
-    //navigator.clipboard.writeText(environment.endpointUrl + "classrooms/invite/" + invite_token).then(() => this._alertService.success("Invite link copied successfully"));
+  }
+
+  public downloadJson(){
+    let classes = this.classrooms.map((classroom: Classroom) => {
+      const date = new Date(classroom.created_at! * 1000);
+
+      return {
+        name: classroom.name,
+        size: classroom.size,
+        invite_token: classroom.invite_token,
+        created_at: date.toLocaleDateString("en-GB", { 
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }) + " - " + String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0'),
+        students_count: classroom.students_count,
+        homeworks_count: classroom.homeworks_count
+      }
+    });
+
+    let sJson = JSON.stringify(classes);
+    let element = document.createElement('a');
+    element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
+    element.setAttribute('download', 'exported_classes_' + Date.now() + '.json');
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click(); 
+    document.body.removeChild(element);
   }
 }

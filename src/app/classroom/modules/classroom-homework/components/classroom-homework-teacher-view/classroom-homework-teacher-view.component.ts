@@ -9,6 +9,7 @@ import { AlertService } from 'src/app/shared/alert/alert.service';
 import * as Plotly from 'plotly.js-dist-min'
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ClassroomHomeworkMapViewComponent } from '../classroom-homework-map-view/classroom-homework-map-view.component';
+import { Location } from '@angular/common';
 
 export interface GraphNode {
   labels: string[];
@@ -81,7 +82,8 @@ export class ClassroomHomeworkTeacherViewComponent {
 
 
   constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, 
-    private _router: Router, private _alertService: AlertService, private _modalService: BsModalService) {
+    private _router: Router, private _alertService: AlertService, private _modalService: BsModalService, 
+    private _location: Location) {
     this.loading = false;
 
     this.homework = null;
@@ -130,7 +132,7 @@ export class ClassroomHomeworkTeacherViewComponent {
       this.homework = <ClassroomHomework>response;
       let tmpMaps: ClassroomHomeworkMap[] = [];
 
-      if(this.homework.maps) {    
+      if(this.homework.maps && this.homework.maps.length > 0) {    
         for(let map of this.homework.maps) {
           if(map.nodes_count > this.maxMapsValues.nodes)
             this.maxMapsValues.nodes = map.nodes_count;
@@ -153,77 +155,89 @@ export class ClassroomHomeworkTeacherViewComponent {
           if(map.edges_count < this.minMapsValues.edges)
             this.minMapsValues.edges = map.edges_count;
 
-          if(map.entropy && map.entropy < this.minMapsValues.entropy)
-            this.minMapsValues.entropy = map.entropy;
+          if(map.entropy! < this.minMapsValues.entropy)
+            this.minMapsValues.entropy = map.entropy!;
 
-          if(map.entropy_percent && map.entropy_percent < this.minMapsValues.entropy_percent)
-            this.minMapsValues.entropy_percent = map.entropy_percent;
+          if(map.entropy_percent! < this.minMapsValues.entropy_percent)
+            this.minMapsValues.entropy_percent = map.entropy_percent!;
 
-          if(map.effort && map.effort < this.minMapsValues.effort)
-            this.minMapsValues.effort = map.effort;
+          if(map.effort! < this.minMapsValues.effort)
+            this.minMapsValues.effort = map.effort!;
         }
         this.resetFilterForm(this.current_chart_type);
-      } 
 
-      let split_entropy = (this.maxMapsValues.entropy - this.minMapsValues.entropy) / 3
-      let first_part_entropy = this.minMapsValues.entropy + split_entropy;
-      let second_part_entropy = first_part_entropy + split_entropy;
+        let split_entropy = (this.maxMapsValues.entropy - this.minMapsValues.entropy) / 3
+        let first_part_entropy = this.minMapsValues.entropy + split_entropy;
+        let second_part_entropy = first_part_entropy + split_entropy;
 
-      let split_entropy_percent = (this.maxMapsValues.entropy_percent - this.minMapsValues.entropy_percent) / 3
-      let first_part_entropy_percent = this.minMapsValues.entropy_percent + split_entropy_percent;
-      let second_part_entropy_percent = first_part_entropy_percent + split_entropy_percent;
-    
-      let split_effort = (this.maxMapsValues.effort - this.minMapsValues.effort) / 3
-      let first_part_effort = this.minMapsValues.effort + split_effort;
-      let second_part_effort = first_part_effort + split_effort;
-
-      for(let map of this.homework.maps!) {
-        let color_entropy = 0
-        let color_entropy_percent = 0
-        let color_effort = 0
-
-        if(map.is_teacher_map) {
-          color_entropy = 3;
-          color_entropy_percent = 3;
-          color_effort = 3;
-        } else {
-          if(map.entropy! > first_part_entropy && map.entropy! < second_part_entropy)
-            color_entropy = 1
-          else if(map.entropy! >= second_part_entropy)
-            color_entropy = 2
+        let split_entropy_percent = (this.maxMapsValues.entropy_percent - this.minMapsValues.entropy_percent) / 3
+        let first_part_entropy_percent = this.minMapsValues.entropy_percent + split_entropy_percent;
+        let second_part_entropy_percent = first_part_entropy_percent + split_entropy_percent;
       
-          if(map.entropy_percent! > first_part_entropy_percent && map.entropy_percent! < second_part_entropy_percent)
-            color_entropy_percent = 1
-          else if(map.entropy_percent! >= second_part_entropy_percent)
-            color_entropy_percent = 2
-      
-          if(map.effort! > first_part_effort && map.effort! < second_part_effort)
-            color_effort = 1
-          else if(map.effort! >= second_part_effort)
-            color_effort = 2
-        }
+        let split_effort = (this.maxMapsValues.effort - this.minMapsValues.effort) / 3
+        let first_part_effort = this.minMapsValues.effort + split_effort;
+        let second_part_effort = first_part_effort + split_effort;
 
-        tmpMaps = [
-          ...tmpMaps, {
-            _id: map._id,
-            color_entropy: color_entropy,
-            color_entropy_percent: color_entropy_percent,
-            color_effort: color_effort,
-            edges_count: map.edges_count,
-            entropy: map.entropy!,
-            entropy_percent: map.entropy_percent!,
-            effort: map.effort!,
-            nodes_count: map.nodes_count,
-            homework_id: map.homework_id,
-            adjacency_matrix: map.adjacency_matrix,
-            created_at: map.created_at,
-            nodes_labels: map.nodes_labels,
-            adjacency_matrix_labels: map.adjacency_matrix_labels,
-            author_name: map.author_name,
-            is_teacher_map: map.is_teacher_map,
-            map_name: map.map_name
+        for(let map of this.homework.maps!) {
+          let color_entropy = 0
+          let color_entropy_percent = 0
+          let color_effort = 0
+
+          if(map.is_teacher_map) {
+            color_entropy = 3;
+            color_entropy_percent = 3;
+            color_effort = 3;
+          } else {
+            if(map.entropy! > first_part_entropy && map.entropy! < second_part_entropy)
+              color_entropy = 1
+            else if(map.entropy! >= second_part_entropy)
+              color_entropy = 2
+        
+            if(map.entropy_percent! > first_part_entropy_percent && map.entropy_percent! < second_part_entropy_percent)
+              color_entropy_percent = 1
+            else if(map.entropy_percent! >= second_part_entropy_percent)
+              color_entropy_percent = 2
+        
+            if(map.effort! > first_part_effort && map.effort! < second_part_effort)
+              color_effort = 1
+            else if(map.effort! >= second_part_effort)
+              color_effort = 2
           }
-        ]
+
+          tmpMaps = [
+            ...tmpMaps, {
+              _id: map._id,
+              color_entropy: color_entropy,
+              color_entropy_percent: color_entropy_percent,
+              color_effort: color_effort,
+              edges_count: map.edges_count,
+              entropy: map.entropy!,
+              entropy_percent: map.entropy_percent!,
+              effort: map.effort!,
+              nodes_count: map.nodes_count,
+              homework_id: map.homework_id,
+              adjacency_matrix: map.adjacency_matrix,
+              created_at: map.created_at,
+              nodes_labels: map.nodes_labels,
+              adjacency_matrix_labels: map.adjacency_matrix_labels,
+              author_name: map.author_name,
+              is_teacher_map: map.is_teacher_map,
+              map_name: map.map_name,
+              display_name: "<b>Nodes Count:</b> " + map.nodes_count +
+                            "<br><b>Edges Count:</b> " + map.edges_count +
+                            "<br><br><b>Entropy:</b> " + map.entropy +
+                            "<br><b>Entropy Percent:</b> " + map.entropy_percent + "%" +
+                            "<br><b>Effort:</b> " + map.effort +
+                            "<br><br><b>Map Name:</b> " + map.map_name + 
+                            "<br><b>Author:</b> " + map.author_name + 
+                            "<br><b>Created At:</b> " + this.dateTransform(map.created_at!)
+            }
+          ]
+        }
+      } else {
+        this._location.back();
+        this._alertService.error("Homework has no submitted maps.");
+        return;
       }
       
       this.homework = {
@@ -237,8 +251,6 @@ export class ClassroomHomeworkTeacherViewComponent {
         expire_datetime: this.homework.expire_datetime
       };
       this.renderScatterPlot(this.current_chart_type);
-
-      
     })
   }
 
@@ -321,73 +333,89 @@ export class ClassroomHomeworkTeacherViewComponent {
       map.color_entropy == trace && 
       map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
       map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
+      map.entropy! >= this.homeworkFilterForm.value.param_min! && map.entropy! <= this.homeworkFilterForm.value.param_max!
     ), 'nodes_count');
 
     let y = this.unpack(this.homework!.maps!.filter(map => 
       map.color_entropy == trace && 
       map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
       map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
+      map.entropy! >= this.homeworkFilterForm.value.param_min! && map.entropy! <= this.homeworkFilterForm.value.param_max!
     ), 'edges_count');
 
     let z = this.unpack(this.homework!.maps!.filter(map => 
       map.color_entropy == trace && 
       map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
       map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-      map.entropy && map.entropy >= this.homeworkFilterForm.value.param_min! && map.entropy <= this.homeworkFilterForm.value.param_max!
+      map.entropy! >= this.homeworkFilterForm.value.param_min! && map.entropy! <= this.homeworkFilterForm.value.param_max!
     ), 'entropy');
+
+    let displayName = this.unpack(this.homework!.maps!.filter(map => 
+      map.color_entropy == trace && 
+      map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+      map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+      map.entropy! >= this.homeworkFilterForm.value.param_min! && map.entropy! <= this.homeworkFilterForm.value.param_max!
+    ), 'display_name');
 
     if(chart_type == CHART_TYPE.EntropyPercent) {
       x = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
+        map.entropy_percent! >= this.homeworkFilterForm.value.param_min! && map.entropy_percent! <= this.homeworkFilterForm.value.param_max!
       ), 'nodes_count');
 
       y = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
+        map.entropy_percent! >= this.homeworkFilterForm.value.param_min! && map.entropy_percent! <= this.homeworkFilterForm.value.param_max!
       ), 'edges_count');
 
       z = this.unpack(this.homework!.maps!.filter(map => 
         map.color_entropy_percent == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.entropy_percent && map.entropy_percent >= this.homeworkFilterForm.value.param_min! && map.entropy_percent <= this.homeworkFilterForm.value.param_max!
+        map.entropy_percent! >= this.homeworkFilterForm.value.param_min! && map.entropy_percent! <= this.homeworkFilterForm.value.param_max!
       ), 'entropy_percent');
+
+      displayName = this.unpack(this.homework!.maps!.filter(map => 
+        map.color_entropy_percent == trace &&
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.entropy_percent! >= this.homeworkFilterForm.value.param_min! && map.entropy_percent! <= this.homeworkFilterForm.value.param_max!
+      ), 'display_name');
     }
     else if(chart_type == CHART_TYPE.Effort) {
       x = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
+        map.effort! >= this.homeworkFilterForm.value.param_min! && map.effort! <= this.homeworkFilterForm.value.param_max!
       ), 'nodes_count');
+
       y = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
+        map.effort! >= this.homeworkFilterForm.value.param_min! && map.effort! <= this.homeworkFilterForm.value.param_max!
       ), 'edges_count');
+
       z = this.unpack(this.homework!.maps!.filter(map => 
         map.color_effort == trace &&
         map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
         map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
-        map.effort && map.effort >= this.homeworkFilterForm.value.param_min! && map.effort <= this.homeworkFilterForm.value.param_max!
+        map.effort! >= this.homeworkFilterForm.value.param_min! && map.effort! <= this.homeworkFilterForm.value.param_max!
       ), 'effort');
+
+      displayName = this.unpack(this.homework!.maps!.filter(map => 
+        map.color_effort == trace &&
+        map.nodes_count >= this.homeworkFilterForm.value.node_min! && map.nodes_count <= this.homeworkFilterForm.value.node_max! &&
+        map.edges_count >= this.homeworkFilterForm.value.edge_min! && map.edges_count <= this.homeworkFilterForm.value.edge_max! &&
+        map.effort! >= this.homeworkFilterForm.value.param_min! && map.effort! <= this.homeworkFilterForm.value.param_max!
+      ), 'display_name');
     }
-    return [x, y, z, this.homework!.maps!.map(map => 
-      "<b>Nodes Count:</b> " + map.nodes_count +
-      "<br><b>Edges Count:</b> " + map.edges_count +
-      "<br><b>" + this.getChartTypeLabel(this.current_chart_type) + ":</b> " + this.getChartTypeValue(map, this.current_chart_type) +
-      "<br><br><b>Map Name:</b> " + map.map_name + 
-      "<br><b>Author:</b> " + map.author_name + 
-      "<br><b>Created At:</b> " + this.dateTransform(map.created_at!)
-    )]
+    return [x, y, z, displayName]
   }
 
   public dateTransform(timestamp: number): string {
@@ -416,7 +444,7 @@ export class ClassroomHomeworkTeacherViewComponent {
           color: colors[0],
           width: 0.5
         },
-        opacity: 0.8
+        opacity: 0.6
       },
       type: 'scatter3d',
       text: this.getCoordsDatum(chart_type, 0)[3],
@@ -434,10 +462,10 @@ export class ClassroomHomeworkTeacherViewComponent {
           color: colors[1],
           width: 0.5
         },
-        opacity: 0.8
+        opacity: 0.6
       },
       type: 'scatter3d',
-      text: this.getCoordsDatum(chart_type, 0)[3],
+      text: this.getCoordsDatum(chart_type, 1)[3],
       hoverinfo: 'text', 
     };
 
@@ -452,12 +480,14 @@ export class ClassroomHomeworkTeacherViewComponent {
           color: colors[2],
           width: 0.5
         },
-        opacity: 0.8
+        opacity: 0.6
       },
       type: 'scatter3d',
-      text: this.getCoordsDatum(chart_type, 0)[3],
+      text: this.getCoordsDatum(chart_type, 2)[3],
       hoverinfo: 'text', 
     };
+
+    console.log(this.getCoordsDatum(chart_type, 3)[0])
 
     let teacherTrace: Partial<Plotly.PlotData> = {
       x: this.getCoordsDatum(chart_type, 3)[0],
@@ -470,16 +500,17 @@ export class ClassroomHomeworkTeacherViewComponent {
           color: colors[3],
           width: 0.5
         },
-        opacity: 0.8
+        opacity: 0.6
       },
       name: 'teacher maps',
       type: 'scatter3d',
-      text: this.getCoordsDatum(chart_type, 0)[3],
+      text: this.getCoordsDatum(chart_type, 3)[3],
       hoverinfo: 'text', 
     };
 
-    let traces: Plotly.Data[] = [firstTrace, secondTrace, thirdTrace, teacherTrace];
 
+    let traces = [firstTrace, secondTrace, thirdTrace, teacherTrace];
+  
     let layout: Partial<Plotly.Layout> = {
       margin: {
         l: 0,
@@ -558,13 +589,13 @@ export class ClassroomHomeworkTeacherViewComponent {
   }
 
   public downloadJson(){
-    var sJson = JSON.stringify(this.homework);
+    var sJson = JSON.stringify(this.homework?.maps);
     var element = document.createElement('a');
     element.setAttribute('href', "data:text/json;charset=UTF-8," + encodeURIComponent(sJson));
-    element.setAttribute('download', (this.homework?.title) ? this.homework?.title + '.json' : 'undefined.json');
+    element.setAttribute('download', (this.homework?.title) ? this.homework?.title + '_maps.json' : 'undefined.json');
     element.style.display = 'none';
     document.body.appendChild(element);
-    element.click(); // simulate click
+    element.click(); 
     document.body.removeChild(element);
   }
 

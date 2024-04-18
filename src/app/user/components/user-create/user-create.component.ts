@@ -18,6 +18,7 @@ export class UserCreateComponent {
     username: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
+    role: ['0', [Validators.required]],
   }, {});
 
   public loading: boolean;
@@ -32,7 +33,8 @@ export class UserCreateComponent {
       lastname: this.userCreateForm.value.lastname!,
       username: this.userCreateForm.value.username!,
       email: this.userCreateForm.value.email!,
-      password: this.userCreateForm.value.password!
+      password: this.userCreateForm.value.password!,
+      role: parseInt(this.userCreateForm.value.role!)
     }
     this.loading = true;
     this._userService.createUser(user).subscribe(response => {

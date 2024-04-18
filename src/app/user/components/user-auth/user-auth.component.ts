@@ -15,8 +15,7 @@ import jwt_decode from "jwt-decode";
 export class UserAuthComponent {
   public userAuthForm = this._fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
-    remember_me: [''],
+    password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]]
   }, {});
 
   public loading: boolean;
@@ -27,7 +26,7 @@ export class UserAuthComponent {
 
   public onSubmit() {
     this.loading = true;
-    this._userService.authUser(this.userAuthForm.value.username!, this.userAuthForm.value.password!, +this.userAuthForm.value.remember_me!).subscribe(response => {
+    this._userService.authUser(this.userAuthForm.value.username!, this.userAuthForm.value.password!).subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         let tokenPayload: any = jwt_decode(response.access_token);
 

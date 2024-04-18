@@ -17,5 +17,6 @@ export interface ClassroomHomeworkMap {
   color_effort?: number,
   is_teacher_map?: boolean,
   author_name?: string,
-  map_name: string
+  map_name: string,
+  display_name?: string
 }

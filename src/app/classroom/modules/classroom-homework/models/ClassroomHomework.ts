@@ -14,6 +14,7 @@ export interface ClassroomHomework {
   student_map?: ClassroomHomeworkMap | null;
   maps?: ClassroomHomeworkMap[]
   status?: number;
+  created_at?: number;
 }
 
 export enum CLASSROOM_HOMEWORK_ACTION { CREATE, UPDATE, DELETE };

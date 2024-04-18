@@ -44,7 +44,7 @@ export class ClassroomHomeworkCreateComponent {
     const expire_date = new Date(this.classroomHomeworkCreateForm.value.expire_date!).getTime() / 1000;
 
     if(start_date > expire_date)
-      return this._alertService.error("Enter an expiration date greater than the start date")
+      return this._alertService.error("Type an expiration date greater than the start date")
 
     let classroomHomework: ClassroomHomework = { 
       classroom_id: this.classroom_id,

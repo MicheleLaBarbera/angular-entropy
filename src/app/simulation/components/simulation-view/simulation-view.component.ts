@@ -425,7 +425,7 @@ export class SimulationViewComponent {
     element.setAttribute('download', (this.simulation?.name) ? this.simulation?.name + '.json' : 'undefined.json');
     element.style.display = 'none';
     document.body.appendChild(element);
-    element.click(); // simulate click
+    element.click(); 
     document.body.removeChild(element);
   }
 }

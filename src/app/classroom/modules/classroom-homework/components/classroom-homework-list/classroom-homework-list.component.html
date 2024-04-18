@@ -5,8 +5,8 @@
       <div class="col-6 text-center">
         <h4 class="mb-4 pt-2"><i class="fa-solid fa-graduation-cap"></i> Homeworks List</h4>
       </div>
-      <div class="col-3">
-        <button class="btn btn-primary w-100" type="button" ><i class="fa-solid fa-download pe-clickable"></i> Export</button>
+      <div class="col-3" *ngIf="homeworks && homeworks.length > 0">
+        <button class="btn btn-primary w-100" type="button" (click)="downloadJson()"><i class="fa-solid fa-download pe-clickable"></i> Export</button>
       </div>
     </div>
 
@@ -38,7 +38,7 @@
             <td *ngIf="classroom">{{homework.maps?.length}} / {{classroom.size}}</td>
             <td>{{homework.start_datetime | dateLabel}}</td>
             <td>{{homework.expire_datetime | dateLabel}}</td>
-            <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Enter homework" style="color:darkgreen" [routerLink]="['homeworks/' + homework._id!.$oid]"></i></td>
+            <td><i class="pe-clickable fa-solid fa-eye" title="Show homework maps" style="color:darkgreen" [routerLink]="['homeworks/' + homework._id!.$oid]"></i></td>
           </tr>
         </tbody>
       </table>

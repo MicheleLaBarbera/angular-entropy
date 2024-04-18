@@ -43,7 +43,7 @@
           <form [formGroup]="userAuthForm" (ngSubmit)="onSubmit()" class="mb-3 mt-3">
             <div class="mb-3">
               <label for="name" class="form-label">Username</label>
-              <input type="text" class="form-control" id="name" name="user_name" placeholder="Enter your username" formControlName="username">
+              <input type="text" class="form-control" id="name" name="user_name" placeholder="Type your username" formControlName="username">
             </div>
 
             <div class="mb-3">
@@ -51,11 +51,6 @@
                 <label for="password" class="form-label">Password</label>
               </div>
               <input type="password" class="form-control" id="password" name="user_password" placeholder="············" formControlName="password">
-            </div>
-
-            <div class="mb-2 form-check">
-              <input class="form-check-input" type="checkbox" id="remember_me" formControlName="remember_me">
-              <label class="form-label" for="remember_me">Remember Me</label>
             </div>
 
             <div class="mb-3">

@@ -10,6 +10,7 @@ export interface Classroom {
   invite_token?: string;
   students_count?: number;
   homeworks_count?: number;
+  created_at?: number;
 }
 
 export enum CLASSROOM_ACTION { CREATE, UPDATE, DELETE };

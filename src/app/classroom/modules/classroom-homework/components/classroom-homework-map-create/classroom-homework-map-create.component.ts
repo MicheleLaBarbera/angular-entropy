@@ -51,6 +51,8 @@ export class ClassroomHomeworkMapCreateComponent {
 
   private _modalRef?: BsModalRef;
 
+  public statusLabel: string = '';
+
   constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router, 
     private _alertService: AlertService, private _modalService: BsModalService) {
     this.loading = false;
@@ -190,11 +192,13 @@ export class ClassroomHomeworkMapCreateComponent {
   
     // Check for cycles
     if (this.hasCycle(adjacencyMatrix)) {
+      this.statusLabel = 'The graph has cycles';
       return false;
     }
   
     for (let i = 0; i < adjacencyMatrix.length; i++) {
       if (validRootCount > 1) {
+        this.statusLabel = 'The graph has multiple roots';
         return false;
       }
   
@@ -209,6 +213,7 @@ export class ClassroomHomeworkMapCreateComponent {
           }
         }
         if (!validLeaf) {
+          this.statusLabel = 'The graph has a leaf that is not connected to any node';
           return false;
         }
       } else {
@@ -220,7 +225,7 @@ export class ClassroomHomeworkMapCreateComponent {
         }
       }
     }
-  
+    this.statusLabel = 'The graph is valid';
     return true;
   }
   
@@ -263,6 +268,12 @@ export class ClassroomHomeworkMapCreateComponent {
   checkDAG(): boolean {
     // Minimum number of nodes check
     if (this.nodes.length < this.homework.node_min) {
+      this.statusLabel = 'The graph has less nodes than the minimum required';
+      return false;
+    }
+
+    if(this.nodes.length > this.homework.node_max) {
+      this.statusLabel = 'The graph has more nodes than the maximum allowed';
       return false;
     }
 

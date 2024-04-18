@@ -28,7 +28,7 @@
             <td>{{classroom.name}}</td>
             <td>{{classroom.students_count}}/{{classroom.size}}</td>
             <td>{{classroom.homeworks_count}}</td>
-            <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Enter class" style="color:darkgreen" [routerLink]="['/classrooms/' + classroom._id!.$oid]"></i></td>
+            <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Show class" style="color:darkgreen" [routerLink]="['/classrooms/' + classroom._id!.$oid]"></i></td>
           </tr>
         </tbody>
       </table>
@@ -43,8 +43,8 @@
       <div class="col-6 text-center">
         <h4 class="mb-4 pt-2"><i class="fa-solid fa-school"></i> Classes List</h4>
       </div>
-      <div class="col-3">
-        <button class="btn btn-primary w-100" type="button" ><i class="fa-solid fa-download pe-clickable"></i> Export</button>
+      <div class="col-3" *ngIf="classrooms && classrooms.length > 0">
+        <button class="btn btn-primary w-100" type="button" (click)="downloadJson()"><i class="fa-solid fa-download pe-clickable"></i> Export</button>
       </div>
     </div>
 
@@ -75,8 +75,8 @@
             <td>{{classroom.name}}</td>
             <td>{{classroom.students_count}}/{{classroom.size}}</td>
             <td>{{classroom.homeworks_count}}</td>
-            <td><i class="pe-clickable fa-solid fa-copy" title="Copy classroom invite link" (click)="copyLink(classroom.invite_token!)"></i></td>
-            <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Enter classroom" style="color:darkgreen" [routerLink]="['/classrooms/' + classroom._id!.$oid]"></i></td>
+            <td><i class="pe-clickable fa-solid fa-copy" title="Copy class invite link" (click)="copyLink(classroom.invite_token!)"></i></td>
+            <td><i class="pe-clickable fa-solid fa-right-to-bracket" title="Show class" style="color:darkgreen" [routerLink]="['/classrooms/' + classroom._id!.$oid]"></i></td>
           </tr>
         </tbody>
       </table>

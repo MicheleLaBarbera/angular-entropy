@@ -18,7 +18,7 @@ export class HttpErrorHandlerService {
   public handleError<T> (serviceName = '', operation = 'operation', result = {} as T) { 
     return (error: HttpErrorResponse): Observable<T> => {
       if(error.error) {
-        this._alertService.error((error.error.detail) ? `${error.error.detail}` : "Impossibile comunicare con il server.");
+        this._alertService.error((error.error.detail) ? `${error.error.detail}` : "Unable to communicate with the server.");
       }
       return of(result as T);
     };

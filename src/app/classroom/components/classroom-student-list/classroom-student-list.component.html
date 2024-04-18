@@ -5,8 +5,8 @@
       <div class="col-6 text-center">
         <h4 class="mb-4 pt-2"><i class="fa-solid fa-graduation-cap"></i> Students List <span *ngIf="students">({{students.length}} / {{classroom.size}})</span></h4>
       </div>
-      <div class="col-3">
-        <button class="btn btn-primary w-100" type="button" ><i class="fa-solid fa-download pe-clickable"></i> Export</button>
+      <div class="col-3" *ngIf="students && students.length > 0 && user.role == 1">
+        <button class="btn btn-primary w-100" type="button" (click)="downloadJson()"><i class="fa-solid fa-download pe-clickable"></i> Export</button>
       </div>
     </div>
     
