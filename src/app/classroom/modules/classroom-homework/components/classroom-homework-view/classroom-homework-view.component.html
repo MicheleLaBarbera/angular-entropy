@@ -12,21 +12,46 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <div class="row">
-            <div class="col-3">
-              <strong>Start Datetime:</strong> {{homework.start_datetime | dateLabel}}<br>
-              <strong>Expire Datetime:</strong> {{homework.expire_datetime | dateLabel}}<br>
-              <strong>Node Min:</strong> {{homework.node_min}}<br>
-              <strong>Node Max:</strong> {{homework.node_max}}
+          <div class="row mb-3" *ngIf="user.role == 1">
+            <div class="col-8"></div>
+            <div class="col-2">
+              <button class="btn btn-warning d-grid w-100" (click)="showEditHomeworkModal()">Edit Homework</button>
             </div>
-            <div class="col-6">
-              <strong>Title:</strong> {{homework.title}} <br>
-              <strong>Description:</strong> {{homework.body}}
-            </div>
-            <div class="col-3 d-flex align-items-center" *ngIf="user.role == 1">
+            <div class="col-2">
               <button class="btn btn-success d-grid w-100" (click)="toggleMapCreation()">{{getMapCreationButtonLabel()}}</button>
             </div>
           </div>
+          <div class="row">
+            <div class="col-4">
+              <div class="card">
+                <div class="card-body">
+                  <div>
+                    <i class="fa-solid fa-fw fa-sheet-plastic me-1"></i> <strong>Title:</strong> {{homework.title}} 
+                  </div>
+                  <div>
+                    <i class="fa-solid fa-fw fa-hourglass-start me-1"></i><strong>Start:</strong> {{homework.start_datetime | dateLabel}}
+                  </div>
+                  <div>
+                    <i class="fa-solid fa-fw fa-hourglass-end me-1"></i><strong>Expire:</strong> {{homework.expire_datetime | dateLabel}}
+                  </div>
+                  <div>
+                    <i class="fa-regular fa-fw fa-circle me-1"></i> <strong>Node Min:</strong> {{homework.node_min}}
+                  </div>
+                  <div>
+                    <i class="fa-solid fa-fw fa-circle-nodes me-1"></i> <strong>Node Max:</strong> {{homework.node_max}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="card">
+                <div class="card-body">
+                  <div [innerHTML]="homework.body | safeHtml"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -38,3 +63,8 @@
 
 </div>
 
+<style>
+  p {
+    margin-bottom: 0;
+  }
+</style>

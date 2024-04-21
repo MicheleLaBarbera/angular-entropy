@@ -10,7 +10,10 @@
 
       <div class="mb-3">
         <label for="body" class="form-label">Body:</label>
-        <textarea rows="3" class="form-control" id="body" name="homework_body" placeholder="Type the homework text" formControlName="body"></textarea>
+        <div class="NgxEditor__Wrapper">
+          <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+          <ngx-editor [editor]="editor" formControlName="body" [disabled]="false" [placeholder]="'Type the homework text'"></ngx-editor>
+        </div>
       </div>
 
       <div class="row mb-3">

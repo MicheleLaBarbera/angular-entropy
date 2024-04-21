@@ -5,7 +5,15 @@
   </div>
 </div>
 
-<div class="mt-2" *ngIf="!loading">
+<div class="mt-2">
+  <div class="row" *ngIf="!loading && homeworks.length == 0">
+    <div class="col-12">
+      <p class="">There seems to be nothing at the moment.</p>
+    </div>
+  </div>
+</div>
+
+<div class="mt-2" *ngIf="!loading && homeworks.length > 0">
   <div class="row" *ngFor="let homework of homeworks">
     <div class="card card-class-list mt-2 mb-3 rounded-4 p-3" [routerLink]="['/classrooms/' + homework.classroom_id + '/homeworks/' + homework._id!.$oid]">
       <div class="row mb-2">
@@ -29,7 +37,6 @@
         </div>
       </div>
       <p class="text-black fs-5 fw-light mb-0">{{homework.title}}</p>
-      <p class="text-grey fs-6 fw-light mb-0">{{homework.body}}</p>
     </div>
   </div>
 </div>

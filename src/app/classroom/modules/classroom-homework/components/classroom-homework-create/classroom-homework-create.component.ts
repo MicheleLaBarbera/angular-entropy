@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ClassroomHomeworkService } from '../../services/classroom-homework.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
-import { CLASSROOM_HOMEWORK_ACTION, ClassroomHomework } from '../../models/ClassroomHomework';
 import { ActivatedRoute } from '@angular/router';
+import { Editor, Toolbar } from 'ngx-editor';
+import { CLASSROOM_HOMEWORK_ACTION, ClassroomHomework } from '../../models/ClassroomHomework';
 
 const fieldsRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   const node_min = parseInt(control.get('node_min')!.value);
@@ -21,6 +22,17 @@ const fieldsRangeValidator: ValidatorFn = (control: AbstractControl): Validation
 export class ClassroomHomeworkCreateComponent {
   public classroom_id!: string;
   public loading: boolean;
+  public editor!: Editor;
+  public toolbar: Toolbar = [
+    ['bold', 'italic'],
+    ['underline', 'strike'],
+    ['code', 'blockquote'],
+    ['ordered_list', 'bullet_list'],
+    [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
+    ['link', 'image'],
+    ['text_color', 'background_color'],
+    ['align_left', 'align_center', 'align_right', 'align_justify'],
+  ];
 
   public classroomHomeworkCreateForm = new FormGroup({
     'title': new FormControl(null, Validators.required),
@@ -37,6 +49,11 @@ export class ClassroomHomeworkCreateComponent {
 
   ngOnInit() {
     this.classroom_id = this._route.snapshot.paramMap.get('classroom_id')!;
+    this.editor = new Editor();
+  }
+
+  ngOnDestroy(): void {
+    this.editor.destroy();
   }
 
   public onSubmit(): void {
@@ -49,7 +66,7 @@ export class ClassroomHomeworkCreateComponent {
     let classroomHomework: ClassroomHomework = { 
       classroom_id: this.classroom_id,
       title: this.classroomHomeworkCreateForm.value.title!,
-      body: this.classroomHomeworkCreateForm.value.body!,
+      body: JSON.stringify(this.classroomHomeworkCreateForm.value.body),
       node_min: this.classroomHomeworkCreateForm.value.node_min!,
       node_max: this.classroomHomeworkCreateForm.value.node_max!,
       start_datetime: start_date,

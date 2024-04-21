@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { User } from 'src/app/user/models/User';
 import { ClassroomHomework } from '../../models/ClassroomHomework';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClassroomHomeworkService } from '../../services/classroom-homework.service';
+import { toHTML } from 'ngx-editor';
+import { AlertService } from 'src/app/shared/alert/alert.service';
 
 export interface GraphNode {
   labels: string[];
@@ -14,8 +16,7 @@ export interface GraphNode {
 @Component({
   selector: 'app-classroom-homework-view',
   templateUrl: './classroom-homework-view.component.html',
-  styles: [
-  ]
+  encapsulation: ViewEncapsulation.None
 })
 export class ClassroomHomeworkViewComponent {
   public user!: User;
@@ -27,7 +28,9 @@ export class ClassroomHomeworkViewComponent {
   private _hasEnabledMapCreation: boolean;
   private _mapCreationButtonLabel: string;
 
-  constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router) {
+  constructor(private _route: ActivatedRoute, private _classroomHomeworkService: ClassroomHomeworkService, private _router: Router,
+    private _alertService: AlertService
+  ) {
 
     this.loading = false;
     this._hasEnabledMapCreation = false;
@@ -53,6 +56,8 @@ export class ClassroomHomeworkViewComponent {
     this._classroomHomeworkService.getClassroomHomework(this.classroom_id, this.homework_id).subscribe(response => {
       if(!response.hasOwnProperty('error')) {
         this.homework = <ClassroomHomework>response;
+
+        this.homework.body = toHTML(JSON.parse(this.homework.body)); // -> html string
       } else 
         this._router.navigate(['/']);
 
@@ -72,5 +77,9 @@ export class ClassroomHomeworkViewComponent {
 
   get hasEnabledMapCreation(): boolean {
     return this._hasEnabledMapCreation;
+  }
+
+  public showEditHomeworkModal(): void {
+    this._alertService.error('Not implemented yet!')
   }
 }

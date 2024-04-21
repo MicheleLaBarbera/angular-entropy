@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/user/models/User';
-import { UserService } from 'src/app/user/services/user.service';
+import { AlertService } from '../alert/alert.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,7 +12,7 @@ import { UserService } from 'src/app/user/services/user.service';
 export class NavbarComponent {
   public user!: User;
 
-  constructor(private _router: Router) {
+  constructor(private _router: Router, private _alertService: AlertService) {
   }
 
   ngOnInit() {
@@ -22,5 +22,9 @@ export class NavbarComponent {
       this._router.navigate(['/users/auth']);
     
     this.user = currentUserData;
+  }
+
+  public notImplemented() {
+    this._alertService.error('Not implemented yet');
   }
 }

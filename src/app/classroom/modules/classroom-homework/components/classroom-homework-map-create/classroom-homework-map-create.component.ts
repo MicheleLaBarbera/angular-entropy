@@ -292,4 +292,8 @@ export class ClassroomHomeworkMapCreateComponent {
     return this.isValidConceptualMap(this.adjacencyMatrix);
   }
 
+  public notImplemented() {
+    this._alertService.error('Not implemented yet');
+  }
+
 }
