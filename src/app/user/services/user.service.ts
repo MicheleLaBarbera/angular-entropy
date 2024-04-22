@@ -48,4 +48,10 @@ export class UserService {
     ) as Observable<User | ServerError>;
   }
 
+  public patchUser(id: String, user: any): Observable<User | ServerError> {
+    return this._http.patch<User>(this._userEndpointUrl + id, user).pipe(
+      catchError(this._handleError('createUser', { error: true }))
+    ) as Observable<User | ServerError>;
+  }
+
 }

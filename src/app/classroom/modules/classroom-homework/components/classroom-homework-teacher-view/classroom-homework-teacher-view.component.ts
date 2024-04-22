@@ -234,11 +234,7 @@ export class ClassroomHomeworkTeacherViewComponent {
             }
           ]
         }
-      } else {
-        this._location.back();
-        this._alertService.error("Homework has no submitted maps.");
-        return;
-      }
+      } 
       
       this.homework = {
         classroom_id: this.homework.classroom_id,

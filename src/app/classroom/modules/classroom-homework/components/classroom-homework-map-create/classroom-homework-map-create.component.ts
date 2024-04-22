@@ -192,13 +192,13 @@ export class ClassroomHomeworkMapCreateComponent {
   
     // Check for cycles
     if (this.hasCycle(adjacencyMatrix)) {
-      this.statusLabel = 'The graph has cycles';
+      this.statusLabel = 'The graph contains a cycles';
       return false;
     }
   
     for (let i = 0; i < adjacencyMatrix.length; i++) {
       if (validRootCount > 1) {
-        this.statusLabel = 'The graph has multiple roots';
+        this.statusLabel = 'The graph contains multiple roots';
         return false;
       }
   
@@ -213,7 +213,7 @@ export class ClassroomHomeworkMapCreateComponent {
           }
         }
         if (!validLeaf) {
-          this.statusLabel = 'The graph has a leaf that is not connected to any node';
+          this.statusLabel = 'The graph contains a leaf that is not reached by any node';
           return false;
         }
       } else {

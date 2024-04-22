@@ -41,6 +41,8 @@ export class ClassroomHomeworkCreateComponent {
     'node_max': new FormControl(null, [Validators.required, Validators.max(30)]),
     'start_date': new FormControl(null, Validators.required),
     'expire_date': new FormControl(null, Validators.required),
+    'start_time': new FormControl('00:00', Validators.required),
+    'expire_time': new FormControl('00:00', Validators.required),
   }, fieldsRangeValidator);
 
   constructor(private _classroomHomeworkService: ClassroomHomeworkService, private _alertService: AlertService, private _route: ActivatedRoute) { 
@@ -57,8 +59,8 @@ export class ClassroomHomeworkCreateComponent {
   }
 
   public onSubmit(): void {
-    const start_date = new Date(this.classroomHomeworkCreateForm.value.start_date!).getTime() / 1000;
-    const expire_date = new Date(this.classroomHomeworkCreateForm.value.expire_date!).getTime() / 1000;
+    const start_date = new Date(this.classroomHomeworkCreateForm.value.start_date! + " " + this.classroomHomeworkCreateForm.value.start_time!).getTime() / 1000;
+    const expire_date = new Date(this.classroomHomeworkCreateForm.value.expire_date! + " " + this.classroomHomeworkCreateForm.value.expire_time!).getTime() / 1000;
 
     if(start_date > expire_date)
       return this._alertService.error("Type an expiration date greater than the start date")
